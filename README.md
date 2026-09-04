@@ -131,6 +131,10 @@ Inicie o ambiente de desenvolvimento:
 
     npm run dev
 
+O Dashboard fica em `/`; a partir dele, o conteúdo declarativo pode ser
+percorrido pelas rotas `/tracks/:trackId`, `/lessons/:lessonId` e
+`/exercises/:exerciseId`.
+
 Valide o projeto:
 
     npm run lint
@@ -142,16 +146,11 @@ Quando os testes automatizados estiverem configurados:
 
 ## Status
 
-O Magnolia está em desenvolvimento inicial.
+A Fase 1 está concluída. O Magnolia já oferece um recorte declarativo e
+navegável com Dashboard, duas trilhas, cinco aulas e sete exercícios.
 
-A prioridade atual é construir uma primeira versão funcional com:
-
-- interface de aprendizado;
-- editor de código;
-- execução Python;
-- avaliação automática;
-- conteúdo inicial;
-- progresso local.
+A prioridade atual é a Fase 2: integrar Monaco Editor e Pyodide para permitir
+editar e executar Python diretamente no navegador.
 
 ## Evolução futura
 

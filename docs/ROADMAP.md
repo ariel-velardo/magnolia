@@ -50,6 +50,8 @@ devem funcionar sem erro.
 
 ## Fase 1 — Estrutura do produto
 
+Status: concluída.
+
 Objetivo:
 
 transformar o scaffold do Vite em uma aplicação Magnolia navegável.
@@ -75,6 +77,10 @@ Implementar:
 - carregamento declarativo de conteúdo.
 
 Ainda não é necessário executar Python nesta fase para todas as telas.
+
+Entrega realizada: recorte declarativo navegável com 2 trilhas, 5 aulas e 7
+exercícios, incluindo páginas de conteúdo e prévias de código ainda sem
+execução.
 
 Critério de conclusão:
 

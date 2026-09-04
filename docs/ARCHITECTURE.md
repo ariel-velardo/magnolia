@@ -80,6 +80,18 @@ O fluxo conceitual principal é:
 
 Cada camada deve possuir responsabilidade clara.
 
+### Implementação atual
+
+Na Fase 1, o catálogo carrega aulas e exercícios declarativos com
+`import.meta.glob` em modo eager. A navegação usa a History API do navegador,
+sem dependência de roteamento. O progresso mínimo é centralizado e registra
+somente aulas visualizadas (`viewedLessonIds`) e exercícios iniciados
+(`startedExerciseIds`); tentativas, conclusão e métricas completas continuam
+previstas para a Fase 4.
+
+Ao publicar a aplicação em hospedagem estática, o host deve redirecionar rotas
+profundas para `index.html`. Essa configuração de deploy não faz parte da Fase 1.
+
 ---
 
 ## 4. Conteúdo
