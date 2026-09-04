@@ -10,6 +10,8 @@ const exercise = {
   order: 1,
   estimatedMinutes: 7,
   difficulty: 'Fundamentos',
+  executionMode: 'function',
+  entryPoint: 'criar_array',
   instructions: [
     'Implemente a função criar_array.',
     'Receba uma lista de valores numéricos.',

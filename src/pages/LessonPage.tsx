@@ -95,37 +95,48 @@ export function LessonPage({ lesson }: LessonPageProps) {
               <p className="lesson-section__opening">{lesson.concept}</p>
             </section>
 
-            <section className="lesson-section" aria-labelledby="explanation-title">
-              <p className="section-number">02 · Explicação</p>
-              <h2 id="explanation-title">Como funciona — e por que usar</h2>
-              {lesson.explanation.map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </section>
-
-            <section className="lesson-section" aria-labelledby="example-title">
-              <p className="section-number">03 · Exemplo</p>
-              <h2 id="example-title">Veja o conceito em contexto</h2>
-              <div className="lesson-examples">
-                {lesson.examples.map((example, index) => (
-                  <figure className="lesson-example" key={index}>
-                    <figcaption>
-                      <strong>{example.title}</strong>
-                      <span>{example.description}</span>
-                    </figcaption>
-                    <pre tabIndex={0}>
-                      <code>{example.code}</code>
-                    </pre>
-                    {example.output && (
-                      <p className="lesson-example__output">
-                        <span>Saída</span>
-                        <code>{example.output}</code>
-                      </p>
-                    )}
-                  </figure>
+            {/*
+              A aula controla quantas seções tem e onde cada exemplo entra. A
+              numeração é derivada da posição, então acrescentar teoria é só
+              acrescentar conteúdo.
+            */}
+            {lesson.sections.map((section, index) => (
+              <section
+                className="lesson-section"
+                key={index}
+                aria-labelledby={`lesson-section-${index}`}
+              >
+                <p className="section-number">
+                  {String(index + 2).padStart(2, '0')}
+                </p>
+                <h2 id={`lesson-section-${index}`}>{section.title}</h2>
+                {section.paragraphs.map((paragraph, paragraphIndex) => (
+                  <p key={paragraphIndex}>{paragraph}</p>
                 ))}
-              </div>
-            </section>
+
+                {section.examples && section.examples.length > 0 && (
+                  <div className="lesson-examples">
+                    {section.examples.map((example, exampleIndex) => (
+                      <figure className="lesson-example" key={exampleIndex}>
+                        <figcaption>
+                          <strong>{example.title}</strong>
+                          <span>{example.description}</span>
+                        </figcaption>
+                        <pre tabIndex={0}>
+                          <code>{example.code}</code>
+                        </pre>
+                        {example.output && (
+                          <p className="lesson-example__output">
+                            <span>Saída</span>
+                            <code>{example.output}</code>
+                          </p>
+                        )}
+                      </figure>
+                    ))}
+                  </div>
+                )}
+              </section>
+            ))}
 
             <aside className="care-note" aria-labelledby="care-title">
               <div className="care-note__icon" aria-hidden="true">!</div>
@@ -142,11 +153,11 @@ export function LessonPage({ lesson }: LessonPageProps) {
 
             <section className="practice-callout" aria-labelledby="practice-title">
               <div>
-                <p className="section-number">04 · Prática</p>
+                <p className="section-number">Prática</p>
                 <h2 id="practice-title">Agora, transforme leitura em repertório</h2>
                 <p>
-                  Os exercícios trabalham uma habilidade por vez. O editor ainda é
-                  uma prévia nesta etapa; você poderá executar Python em breve.
+                  Os exercícios trabalham uma habilidade por vez, na ordem
+                  sugerida. Você escreve e executa o Python direto no navegador.
                 </p>
               </div>
               <div className="practice-callout__links">

@@ -59,35 +59,42 @@ Conteúdos planejados incluem:
 
 ## Experiência de exercício
 
-Cada exercício poderá oferecer:
+Cada exercício já oferece:
 
 - explicação do problema;
 - exemplos;
 - código inicial;
-- editor de código;
+- editor de código com destaque de sintaxe;
 - execução Python no navegador;
+- saída do programa;
+- mensagens de erro do Python;
+- dicas progressivas.
+
+Ainda virão:
+
 - testes automáticos;
-- feedback de erros;
-- dicas;
-- acompanhamento de progresso.
+- avaliação da solução;
+- feedback pedagógico;
+- registro de conclusão no progresso.
 
 O objetivo não é apenas informar se a resposta está certa ou errada, mas ajudar o aluno a entender o erro e tentar novamente.
 
 ## Stack
 
-A stack inicial é:
+A stack atual é:
 
 - React
 - TypeScript
 - Vite
 - ESLint
-- Tailwind CSS
+- CSS próprio, sem framework de estilos
 - Monaco Editor
 - Pyodide
 - localStorage
 - Vitest
 
-Python será executado localmente no navegador através do Pyodide.
+Python executa localmente no navegador através do Pyodide, dentro de um Web
+Worker. Nenhum código do aluno é enviado a servidor algum.
 
 A V1 não possui backend, banco de dados ou autenticação.
 
@@ -121,6 +128,10 @@ As regras para criação de conteúdo estão em:
 
 `docs/CONTENT_GUIDE.md`
 
+A progressão da trilha de Programação está em:
+
+`docs/PROGRAMMING_CURRICULUM.md`
+
 ## Executando localmente
 
 Instale as dependências:
@@ -137,20 +148,29 @@ percorrido pelas rotas `/tracks/:trackId`, `/lessons/:lessonId` e
 
 Valide o projeto:
 
+    npm test
     npm run lint
     npm run build
 
-Quando os testes automatizados estiverem configurados:
-
-    npm test
+Na primeira execução de um exercício, o navegador baixa o runtime do Pyodide
+(cerca de 10 MB) da CDN oficial. Depois disso ele fica em cache e é
+reaproveitado durante a sessão.
 
 ## Status
 
-A Fase 1 está concluída. O Magnolia já oferece um recorte declarativo e
-navegável com Dashboard, duas trilhas, cinco aulas e sete exercícios.
+As Fases 1 e 2 estão concluídas.
 
-A prioridade atual é a Fase 2: integrar Monaco Editor e Pyodide para permitir
-editar e executar Python diretamente no navegador.
+O Magnolia oferece um recorte declarativo e navegável com Dashboard, duas
+trilhas, nove aulas e vinte e três exercícios; e a página de exercício já traz
+um editor Monaco com Python executando no navegador, captura de `stdout` e
+tratamento de erros do Python.
+
+A trilha de Programação começa do zero — do primeiro `print` até funções — e
+nenhum exercício exige um conceito que ainda não foi ensinado. A progressão está
+documentada em `docs/PROGRAMMING_CURRICULUM.md`.
+
+A prioridade atual é a Fase 3: modelo de `TestCase`, test runner e evaluator.
+Executar código ainda **não** avalia a solução nem conclui o exercício.
 
 ## Evolução futura
 

@@ -89,6 +89,11 @@ somente aulas visualizadas (`viewedLessonIds`) e exercícios iniciados
 (`startedExerciseIds`); tentativas, conclusão e métricas completas continuam
 previstas para a Fase 4.
 
+Na Fase 2, a página de exercício ganhou editor e execução: Monaco carregado sob
+demanda e Pyodide dentro de um Web Worker. O fluxo vai hoje de Conteúdo até o
+feedback de execução — o que o Python respondeu. Test Runner, Evaluator e
+registro de conclusão continuam vazios, previstos para as Fases 3 e 4.
+
 Ao publicar a aplicação em hospedagem estática, o host deve redirecionar rotas
 profundas para `index.html`. Essa configuração de deploy não faz parte da Fase 1.
 
@@ -142,11 +147,16 @@ Pode conter:
 
 - objetivos;
 
-- explicação;
+- conceito;
 
-- exemplos;
+- seções de explicação;
 
 - exercícios relacionados.
+
+A explicação é uma lista de `LessonSection` — título, parágrafos e exemplos
+opcionais — em vez de um texto corrido com uma galeria de exemplos no fim. Assim
+o autor alterna teoria e exemplo quantas vezes o conceito exigir, e a página
+renderiza o que existir sem conhecer o assunto.
 
 ### Exercise
 
@@ -164,6 +174,8 @@ Pode conter:
 
 - dificuldade;
 
+- modo de execução;
+
 - descrição;
 
 - instruções;
@@ -177,6 +189,26 @@ Pode conter:
 - testes;
 
 - metadados.
+
+#### Modos de execução
+
+`Exercise` é uma união discriminada por `executionMode`:
+
+    ScriptExercise    executionMode: 'script'
+    FunctionExercise  executionMode: 'function' + entryPoint: string
+
+Um exercício de script é código escrito de cima para baixo, avaliado pela saída
+do programa. Um exercício de função pede a implementação da função nomeada em
+`entryPoint`.
+
+A união existe para que `entryPoint` só exista onde faz sentido: um exercício de
+script não tem como declará-lo, e a Fase 3 será obrigada pelo compilador a
+tratar os dois casos em vez de assumir que todo exercício é uma função.
+
+O tópico controla o que é permitido. `Topic.unlocksExecutionMode` marca a partir
+de onde exercícios de função são aceitos na trilha, e o catálogo recusa um
+exercício de função em tópico anterior a esse. A progressão pedagógica que
+sustenta essa regra está em `docs/PROGRAMMING_CURRICULUM.md`.
 
 ### TestCase
 
@@ -328,6 +360,55 @@ A implementação deve evitar bloquear a interface sempre que razoavelmente poss
 
 Código com loop infinito é um risco em execução no navegador. Se a primeira implementação não possuir mecanismo robusto de timeout ou Worker, essa limitação deve permanecer isolada no runner e ser documentada.
 
+### Implementação atual
+
+O runner é o único caminho da aplicação para executar Python. Arquivos:
+
+    src/engine/pythonRunner/pythonRunner.ts         fachada usada pela aplicação
+    src/engine/pythonRunner/pythonRunner.worker.ts  Pyodide dentro do Web Worker
+    src/engine/pythonRunner/pythonError.ts          normalização de erros (pura)
+    src/engine/pythonRunner/executionOutput.ts      normalização de stdout (pura)
+    src/engine/pythonRunner/pyodideConfig.ts        versão e origem do Pyodide
+    src/engine/pythonRunner/workerProtocol.ts       contrato de mensagens
+
+Decisões:
+
+**Web Worker.** O Pyodide roda fora da thread principal. A interface continua
+respondendo durante o download de ~10 MB, e um laço infinito pode ser
+interrompido com `worker.terminate()` em vez de travar a aba.
+
+**Carregamento sob demanda.** O runtime só é baixado na primeira execução —
+abrir um exercício não baixa nada. O Worker guarda a instância e a reaproveita
+nas execuções seguintes; uma carga que falhe descarta a promise, para que a
+próxima tentativa possa recomeçar em vez de repetir o erro guardado.
+
+**Origem do runtime.** O Pyodide vem da CDN oficial, na versão fixada em
+`pyodideConfig.ts`. O pacote `pyodide` está instalado apenas como
+devDependency, para fornecer os tipos; nada dele entra no bundle.
+
+**stdout.** Capturado com `setStdout({ batched })` e um flush explícito ao
+final, porque o callback só entrega o buffer ao encontrar uma quebra de linha.
+Os pedaços são unidos em `executionOutput.ts`, fora da interface.
+
+**Erros.** O Worker converte a exceção do Pyodide em `ExecutionError` antes de
+responder, porque instâncias de `Error` com campos próprios não sobrevivem à
+clonagem estruturada. `pythonError.ts` remove os quadros internos do Pyodide do
+traceback e extrai tipo, mensagem e a linha do código do aluno. Erros do
+Python, tempo limite e falhas de ambiente são distinguidos pelo campo `kind`.
+
+**Tempo limite.** 10 segundos, contados apenas a partir do momento em que o
+Python começa a rodar — o download do runtime e dos pacotes tem um limite
+separado e generoso, para não penalizar conexões lentas. Ao estourar, o Worker
+é derrubado e o runtime é recarregado na execução seguinte.
+
+**Concorrência.** A fachada mantém no máximo uma execução em andamento; uma
+segunda chamada durante a primeira devolve um resultado de erro em vez de
+disputar o interpretador.
+
+Estados expostos à interface hoje: `idle`, `preparing` (baixando runtime ou
+pacotes) e `running`. `ready` e `error` ainda não existem como estados
+persistentes porque nada na interface depende deles fora de uma execução.
+
 ---
 
 ## 8. Dependências Python
@@ -347,6 +428,17 @@ ou:
     packages: \["pandas"]
 
 A implementação concreta poderá escolher outra representação.
+
+### Implementação atual
+
+`Exercise.packages` é a representação escolhida. O runner recebe essa lista e,
+antes de executar, carrega apenas os pacotes que ainda não estão disponíveis na
+instância — um `Set` no Worker registra o que já foi carregado, então rodar o
+mesmo exercício de novo não repete o download.
+
+Exercícios de Python puro declaram `packages: []` e não carregam NumPy. Um
+exercício que declare `packages: ["pandas"]` funciona sem nenhuma alteração de
+código: qualquer pacote da distribuição do Pyodide é aceito.
 
 ---
 
@@ -403,6 +495,14 @@ Caso no futuro seja necessário proteger realmente os testes, a avaliação deve
 Local:
 
     src/engine/evaluator/
+
+O evaluator precisará de estratégias distintas por `executionMode`:
+
+    script    saída do programa e estado final simples
+    function  chamar o entryPoint, passar argumentos e comparar o retorno
+
+O modelo de conteúdo já distingue os dois casos, então essa separação é uma
+decisão de implementação da Fase 3 e não exige mudança no domínio.
 
 Responsabilidade:
 
@@ -591,6 +691,11 @@ No futuro poderão existir engines diferentes, como:
 A V1, entretanto, deve implementar apenas o necessário para Python.
 
 Não construir infraestrutura genérica excessiva antes dessa necessidade existir.
+
+O primeiro eixo de variação real já apareceu, e é interno ao Python: um
+exercício de script e um exercício de função são avaliados de formas
+diferentes. A união discriminada de `Exercise` cobre esse caso sem antecipar
+engines de outras linguagens.
 
 ---
 

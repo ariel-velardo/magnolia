@@ -104,6 +104,16 @@ Exemplos:
 
 ## 4. Aula
 
+Uma aula é escrita como uma sequência de seções (`Lesson.sections`), cada uma
+com título, parágrafos e, quando ajudar, exemplos de código comentados.
+
+Alternar explicação e exemplo várias vezes é melhor do que um único bloco de
+texto seguido de um exemplo solitário. A página não conhece o assunto: quantas
+seções existem e onde cada exemplo entra é decisão de quem escreve o conteúdo.
+
+Antes das seções vem o campo `concept`: uma frase que responde "o que é isso?"
+sem depender de nenhum detalhe.
+
 Uma aula deve responder, quando aplicável:
 
 ### O que é?
@@ -146,6 +156,8 @@ Um exercício pode conter:
 
 - dificuldade;
 
+- modo de execução;
+
 - descrição;
 
 - instruções;
@@ -159,6 +171,23 @@ Um exercício pode conter:
 - testes;
 
 - metadados.
+
+### Modo de execução
+
+Todo exercício declara em `executionMode` como o aluno escreve o código.
+
+`script`: o aluno escreve instruções de cima para baixo e o resultado é a saída
+do programa. É o único modo possível antes do tópico Funções.
+
+`function`: o aluno implementa a função nomeada em `entryPoint`. Só existe a
+partir do tópico marcado com `unlocksExecutionMode: 'function'`.
+
+`entryPoint` só existe em exercícios de função — o tipo é uma união
+discriminada, e um exercício de script não consegue declará-lo.
+
+**Nunca peça `def` a um aluno que ainda não estudou funções.** A progressão que
+determina isso está em `docs/PROGRAMMING_CURRICULUM.md`, e a regra é verificada
+automaticamente pelo catálogo e por `tests/curriculum.test.ts`.
 
 ---
 
@@ -248,17 +277,49 @@ Não é necessário preencher todos os níveis na V1.
 
 O starter code deve reduzir trabalho irrelevante sem resolver o desafio.
 
-Exemplo adequado:
+Em exercício de **script**, ele prepara os dados e marca onde o aluno escreve:
 
-    def calcular\_media(valores):
+    preco_unitario = 18.5
+    quantidade = 2
 
+    # Calcule o total e exiba a frase
+
+Em exercício de **função**, ele traz a assinatura já pronta — o aluno preenche o
+corpo, e não a definição:
+
+    def calcular_media(valores):
         # escreva sua solução aqui
-
         pass
 
 Evitar entregar grande parte da lógica pronta.
 
 Também evitar exigir boilerplate que não faz parte do conhecimento sendo treinado.
+
+O starter code de um exercício de script **não pode conter `def`**.
+
+### print dentro e fora da função
+
+Enquanto o test runner não existe, um exercício de função não produz saída
+nenhuma sozinha — e ver a tela vazia é o comportamento correto.
+
+Para o aluno conferir o retorno, o starter code inclui uma linha de inspeção
+*fora* da função:
+
+    def calcular_total(preco_unitario, quantidade):
+        # Calcule e devolva o total
+        pass
+
+
+    # Linha de inspeção: fora da função, só para conferir o retorno
+    print(calcular_total(18.5, 2))
+
+As duas orientações convivem sem se contradizer, e o enunciado deve deixar isso
+explícito:
+
+- **dentro** da função, use `return` e não `print` — o objetivo é entregar o
+  valor a quem chamou;
+- **fora** da função, `print(funcao(...))` é uma ferramenta de inspeção
+  temporária, que não faz parte da solução.
 
 ---
 
@@ -266,15 +327,22 @@ Também evitar exigir boilerplate que não faz parte do conhecimento sendo trein
 
 Exemplos devem ajudar o usuário a entender o contrato do exercício.
 
-Exemplo:
+Em exercício de **função**, o exemplo tem chamada e retorno:
 
-    Entrada:
+    Chamada:
 
-    \[2, 4, 6]
+    calcular_total(18.5, 2)
+
+    Retorno esperado:
+
+    37.0
+
+Em exercício de **script** não existe entrada: o exemplo é a saída esperada do
+programa, e o campo `input` fica ausente.
 
     Saída esperada:
 
-    12
+    Total: 37.0
 
 Quando necessário, mostrar mais de um exemplo.
 
@@ -550,11 +618,23 @@ Evitar downloads externos durante exercícios.
 
 Um tópico deve evoluir aproximadamente assim:
 
+    conceito
+
+        ↓
+
     explicação
 
         ↓
 
-    aplicação direta
+    exemplo comentado
+
+        ↓
+
+    prática guiada
+
+        ↓
+
+    prática direta
 
         ↓
 
@@ -562,13 +642,17 @@ Um tópico deve evoluir aproximadamente assim:
 
         ↓
 
-    combinação de conceitos
+    desafio
 
-        ↓
+As três primeiras etapas são a aula; as demais são exercícios, ordenados por
+`order` e diferenciados por `difficulty`.
 
-    problema menos guiado
+Referência de volume para tópicos de fundamentos: **4 a 8 práticas por tópico**.
 
 Não aumentar dificuldade apenas aumentando o tamanho do enunciado.
+
+A ordem dos tópicos, seus pré-requisitos e o que cada um pode cobrar estão em
+`docs/PROGRAMMING_CURRICULUM.md`.
 
 ---
 

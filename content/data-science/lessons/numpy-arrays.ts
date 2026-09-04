@@ -16,19 +16,34 @@ const lesson = {
   ],
   concept:
     'Um array NumPy organiza valores em uma estrutura homogênea e permite operações vetorizadas eficientes.',
-  explanation: [
-    'Arrays se parecem com listas, mas foram projetados para cálculos numéricos. Em geral, seus elementos compartilham um mesmo tipo, exposto pelo atributo dtype.',
-    'O atributo shape descreve as dimensões do array. Um conjunto simples de medições possui uma dimensão; uma tabela numérica pode possuir linhas e colunas.',
-    'Operações aritméticas são aplicadas elemento a elemento. Somar 1 a um array cria resultados para todas as posições sem exigir um for escrito manualmente.',
-  ],
-  examples: [
+  sections: [
     {
-      title: 'Ajustando uma série de medições',
-      description:
-        'A soma é aplicada a cada temperatura e preserva a forma do array.',
-      code:
-        'import numpy as np\n\ntemperaturas = np.array([19.5, 21.0, 23.5])\ntemperaturas_ajustadas = temperaturas + 0.5',
-      output: 'array([20. , 21.5, 24. ])',
+      title: 'Arrays não são listas',
+      paragraphs: [
+        'Arrays se parecem com listas, mas foram projetados para cálculos numéricos. Em geral, seus elementos compartilham um mesmo tipo, exposto pelo atributo dtype.',
+      ],
+    },
+    {
+      title: 'shape: as dimensões do array',
+      paragraphs: [
+        'O atributo shape descreve as dimensões do array. Um conjunto simples de medições possui uma dimensão; uma tabela numérica pode possuir linhas e colunas.',
+      ],
+    },
+    {
+      title: 'Operações elemento a elemento',
+      paragraphs: [
+        'Operações aritméticas são aplicadas elemento a elemento. Somar 1 a um array cria resultados para todas as posições sem exigir um for escrito manualmente.',
+      ],
+      examples: [
+        {
+          title: 'Ajustando uma série de medições',
+          description:
+            'A soma é aplicada a cada temperatura e preserva a forma do array.',
+          code:
+            'import numpy as np\n\ntemperaturas = np.array([19.5, 21.0, 23.5])\ntemperaturas_ajustadas = temperaturas + 0.5',
+          output: 'array([20. , 21.5, 24. ])',
+        },
+      ],
     },
   ],
   commonMistakes: [

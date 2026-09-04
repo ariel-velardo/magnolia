@@ -10,6 +10,8 @@ const exercise = {
   order: 2,
   estimatedMinutes: 9,
   difficulty: 'Fundamentos',
+  executionMode: 'function',
+  entryPoint: 'converter_para_fahrenheit',
   instructions: [
     'Implemente a função converter_para_fahrenheit.',
     'Receba um array NumPy com temperaturas em Celsius.',

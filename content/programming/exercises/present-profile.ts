@@ -1,51 +1,55 @@
 import type { Exercise } from '../../../src/types'
 
 const exercise = {
-  id: 'prog-variables-001',
+  id: 'prog-functions-001',
   trackId: 'programming',
-  topicId: 'programming-variables',
-  title: 'Apresentando um perfil',
+  topicId: 'programming-functions',
+  title: 'Apresentando um perfil com uma função',
   description:
-    'Complete uma função que reúna um nome e uma idade em uma frase de apresentação.',
+    'Transforme em função a apresentação que você já montou como script, agora devolvendo o texto em vez de exibi-lo.',
   order: 1,
-  estimatedMinutes: 8,
-  difficulty: 'Fundamentos',
+  estimatedMinutes: 10,
+  difficulty: 'Fácil',
+  executionMode: 'function',
+  entryPoint: 'apresentar_perfil',
   instructions: [
-    'Implemente a função apresentar_perfil.',
-    'Receba nome como texto e idade como número inteiro.',
-    'Retorne uma frase no formato: nome tem idade anos.',
-    'Não use print; a função deve retornar o texto.',
+    'Implemente a função apresentar_perfil, que recebe nome e idade.',
+    'Monte a frase no formato: Ana tem 28 anos.',
+    'Devolva a frase com return. Dentro da função, não use print: o objetivo é entregar o texto a quem chamou.',
+    'Para conferir o resultado enquanto resolve, chame a função fora dela e imprima o retorno — essa linha de inspeção não faz parte da solução.',
   ],
   starterCode:
-    'def apresentar_perfil(nome, idade):\n    # Retorne a frase de apresentação.\n    pass',
+    'def apresentar_perfil(nome, idade):\n    # Monte a frase e devolva com return\n    pass\n\n\n# Linha de inspeção: fora da função, só para conferir o retorno\nprint(apresentar_perfil("Ana", 28))\n',
   examples: [
     {
-      input: "apresentar_perfil('Ana', 28)",
+      input: 'apresentar_perfil("Ana", 28)',
       output: "'Ana tem 28 anos.'",
+      explanation:
+        'A função devolve o texto. A linha de inspeção é que o exibe na tela.',
     },
     {
-      input: "apresentar_perfil('Caio', 19)",
+      input: 'apresentar_perfil("Caio", 19)',
       output: "'Caio tem 19 anos.'",
     },
   ],
   hints: [
     {
-      id: 'prog-variables-001-hint-1',
+      id: 'prog-functions-001-hint-1',
       order: 1,
-      text: 'Uma f-string permite inserir os dois parâmetros diretamente no texto.',
+      text: 'A f-string que você usou no exercício de variáveis serve aqui, agora com os parâmetros.',
     },
     {
-      id: 'prog-variables-001-hint-2',
+      id: 'prog-functions-001-hint-2',
       order: 2,
-      text: 'Comece a string com a letra f e coloque cada nome de variável entre chaves.',
+      text: 'Troque o pass por um return seguido da frase montada.',
     },
     {
-      id: 'prog-variables-001-hint-3',
+      id: 'prog-functions-001-hint-3',
       order: 3,
-      text: 'Confira espaços e pontuação: o ponto final também faz parte do resultado.',
+      text: 'Se a inspeção exibir None, é sinal de que a função imprimiu em vez de retornar.',
     },
   ],
-  skill: 'Formatar dados de tipos diferentes em uma string.',
+  skill: 'Devolver um valor de uma função em vez de exibi-lo.',
   packages: [],
 } satisfies Exercise
 

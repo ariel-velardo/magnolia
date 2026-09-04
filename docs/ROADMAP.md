@@ -90,6 +90,8 @@ o usuário consegue navegar desde o Dashboard até um exercício real carregado 
 
 ## Fase 2 — Ambiente de programação
 
+Status: concluída.
+
 Objetivo:
 
 permitir escrever e executar Python.
@@ -110,6 +112,17 @@ Implementar:
 
 - feedback de erro de sintaxe e runtime.
 
+Entrega realizada: editor Monaco com destaque de sintaxe para Python e o
+starter code do exercício; Pyodide carregado sob demanda dentro de um Web
+Worker e reaproveitado entre execuções; pacotes carregados a partir de
+`Exercise.packages`; captura de `stdout` e `stderr`; erros do Python
+apresentados com tipo, mensagem, linha e traceback; tempo limite de 10 segundos
+que interrompe laços infinitos sem travar a aba. Vitest configurado, com testes
+das partes puras do runner e das invariantes do catálogo.
+
+Executar código **não** avalia a solução nem marca o exercício como concluído —
+isso depende do evaluator, previsto para a Fase 3.
+
 Critério de conclusão:
 
 o usuário consegue escrever Python no editor e executar o código no navegador.
@@ -122,11 +135,17 @@ Objetivo:
 
 transformar execução em prática estruturada.
 
+Preparação já concluída: o modelo de conteúdo distingue exercício de script de
+exercício de função (`executionMode`), `entryPoint` existe apenas onde faz
+sentido, e a progressão curricular está documentada em
+`docs/PROGRAMMING_CURRICULUM.md`. O test runner não precisa assumir que todo
+exercício é uma função.
+
 Implementar:
 
 - modelo de TestCase;
 
-- test runner;
+- test runner com estratégia por modo de execução;
 
 - evaluator;
 
@@ -180,13 +199,22 @@ Objetivo:
 
 transformar a infraestrutura em uma plataforma utilizável.
 
+A progressão da trilha de Programação, com a ordem dos tópicos e o que cada um
+pode cobrar, está em `docs/PROGRAMMING_CURRICULUM.md`. Sete tópicos já existem,
+do zero até Funções; os três primeiros estão completos e os demais precisam
+chegar à referência de 4 a 8 práticas.
+
 Referência inicial:
 
 ### Programação
 
 Aproximadamente 12 desafios sobre:
 
+- primeiros passos;
+
 - variáveis;
+
+- operadores;
 
 - condicionais;
 
@@ -203,6 +231,8 @@ Aproximadamente 12 desafios sobre:
 - sets;
 
 - comprehensions.
+
+A trilha de Data Science ainda precisa da mesma revisão curricular.
 
 ### Data Science
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { AppLink } from '../components/common/AppLink'
 import { Breadcrumbs } from '../components/common/Breadcrumbs'
 import { Icon } from '../components/common/Icon'
-import { CodePreview } from '../components/editor/CodePreview'
+import { ExerciseWorkspace } from '../components/exercise/ExerciseWorkspace'
 import {
   getNextLearningItem,
   getTopicById,
@@ -59,6 +59,18 @@ export function ExercisePage({ exercise }: ExercisePageProps) {
               <dt>Habilidade</dt>
               <dd>{exercise.skill}</dd>
             </div>
+            <div>
+              <dt>Formato</dt>
+              <dd>
+                {exercise.executionMode === 'function' ? (
+                  <>
+                    Função <code>{exercise.entryPoint}</code>
+                  </>
+                ) : (
+                  'Script'
+                )}
+              </dd>
+            </div>
           </dl>
         </header>
 
@@ -85,12 +97,17 @@ export function ExercisePage({ exercise }: ExercisePageProps) {
                   <article className="exercise-example" key={index}>
                     <p className="exercise-example__number">Exemplo {index + 1}</p>
                     <dl>
+                      {/* Exercícios de script não têm entrada: só a saída esperada. */}
+                      {example.input !== undefined && (
+                        <div>
+                          <dt>Chamada</dt>
+                          <dd><code>{example.input}</code></dd>
+                        </div>
+                      )}
                       <div>
-                        <dt>Entrada</dt>
-                        <dd><code>{example.input}</code></dd>
-                      </div>
-                      <div>
-                        <dt>Saída esperada</dt>
+                        <dt>
+                          {example.input === undefined ? 'Saída esperada' : 'Retorno esperado'}
+                        </dt>
                         <dd><code>{example.output}</code></dd>
                       </div>
                     </dl>
@@ -122,32 +139,7 @@ export function ExercisePage({ exercise }: ExercisePageProps) {
             </section>
           </div>
 
-          <aside className="exercise-workspace" aria-label="Área de código">
-            <div className="workspace-intro">
-              <div>
-                <p className="section-number">Starter code</p>
-                <h2>Seu ponto de partida</h2>
-              </div>
-              <span className="workspace-intro__phase">
-                <span aria-hidden="true" /> Prévia da Fase 1
-              </span>
-            </div>
-            <CodePreview
-              code={exercise.starterCode}
-              filename="solucao.py"
-              language="Python"
-            />
-            <div className="workspace-message" role="note">
-              <Icon name="spark" size={19} />
-              <div>
-                <strong>A execução ainda não está habilitada.</strong>
-                <p>
-                  Na próxima etapa, esta área receberá Monaco Editor, Pyodide e
-                  feedback de erros — sem enviar seu código para um servidor.
-                </p>
-              </div>
-            </div>
-          </aside>
+          <ExerciseWorkspace key={exercise.id} exercise={exercise} />
         </div>
 
         <nav className="content-next exercise-next" aria-label="Navegação do exercício">

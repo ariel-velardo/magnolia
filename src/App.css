@@ -1649,26 +1649,28 @@
   font-size: 23px;
 }
 
-.workspace-intro__phase {
+.workspace-intro__packages {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding-top: 4px;
-  color: var(--ink-500);
+  color: var(--sage-700);
+  font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
-.workspace-intro__phase > span {
+.workspace-intro__packages > span {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--gold-500);
+  background: var(--sage-600);
 }
 
-.code-preview {
-  margin: 0;
+.code-editor {
   overflow: hidden;
   color: var(--code-ink);
   border: 1px solid #2d3c33;
@@ -1676,40 +1678,108 @@
   background: var(--code-surface);
 }
 
-.code-preview__header {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
+.code-editor__header {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 9px;
-  min-height: 48px;
+  min-height: 42px;
   padding: 0 16px;
+  border-bottom: 1px solid rgba(233, 239, 233, 0.11);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.code-editor__filename {
+  color: #eef2ed;
+  font-weight: 750;
+}
+
+.code-editor__language {
+  color: #8e9e93;
+}
+
+/* O Monaco mede a si mesmo pelo contêiner, então a altura vive aqui. */
+.code-editor__surface {
+  height: clamp(280px, 44vh, 430px);
+}
+
+/* O wrapper do Monaco é um flex container com altura inline de 100%; a regra
+   apenas reforça isso caso a altura inline mude em versões futuras. */
+.code-editor__surface > section {
+  height: 100%;
+}
+
+.code-editor__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #8e9e93;
+  font-size: 11px;
+}
+
+.workspace-note {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  align-items: start;
+  gap: 10px;
+  padding: 13px 15px;
+  margin: 14px 0 0;
+  color: var(--ink-800);
+  border: 1px solid #d9c6cd;
+  border-radius: 12px;
+  background: rgba(243, 226, 231, 0.42);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.workspace-note code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 253, 248, 0.75);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.code-editor__hint {
+  padding: 11px 2px 0;
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.code-editor__hint kbd {
+  padding: 1px 5px;
+  color: var(--ink-800);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+/* Prévia estática usada enquanto o Monaco carrega. */
+.code-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  color: var(--code-ink);
+  background: var(--code-surface);
+}
+
+.code-preview__status {
+  padding: 9px 16px;
+  margin: 0;
   color: #aab8ae;
   border-bottom: 1px solid rgba(233, 239, 233, 0.11);
   font-size: 9px;
 }
 
-.code-preview__title {
-  color: #eef2ed;
-  font-weight: 750;
-}
-
-.code-preview__status {
-  padding: 3px 6px;
-  color: #e2bdca;
-  border: 1px solid rgba(226, 189, 202, 0.25);
-  border-radius: 999px;
-}
-
-.code-preview__metadata {
-  display: flex;
-  justify-content: flex-end;
-  gap: 9px;
-  color: #8e9e93;
-  font-family: var(--font-mono);
-}
-
 .code-preview__body {
-  max-height: 420px;
+  flex: 1;
   padding: 18px 0;
   margin: 0;
   overflow: auto;
@@ -1726,10 +1796,6 @@
   padding: 0 20px 0 0;
 }
 
-.code-preview__line:hover {
-  background: rgba(255, 255, 255, 0.035);
-}
-
 .code-preview__line-number {
   width: 43px;
   display: inline-block;
@@ -1743,36 +1809,209 @@
   color: #e7eee8;
 }
 
-.code-preview__note {
-  padding: 13px 16px;
-  margin: 0;
-  color: #9aaa9f;
-  border-top: 1px solid rgba(233, 239, 233, 0.11);
-  background: rgba(255, 255, 255, 0.025);
-  font-size: 9px;
-  line-height: 1.5;
+.workspace-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 20px;
 }
 
-.workspace-message {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  gap: 11px;
-  padding: 18px 4px 1px;
-  color: var(--magnolia-600);
+.workspace-actions .button,
+.workspace-actions .quiet-link {
+  border-style: solid;
+  cursor: pointer;
 }
 
-.workspace-message strong {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--ink-800);
+.workspace-actions .quiet-link {
+  padding: 0;
+  border: 0;
+  background: none;
   font-size: 11px;
 }
 
-.workspace-message p {
+.workspace-actions .button:disabled,
+.workspace-actions .quiet-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.workspace-actions .button:disabled:hover,
+.workspace-actions .quiet-link:disabled:hover {
+  color: inherit;
+  transform: none;
+}
+
+.button__spinner,
+.execution-panel__spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  opacity: 0.85;
+  animation: magnolia-spin 700ms linear infinite;
+}
+
+@keyframes magnolia-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.execution-panel {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.execution-panel__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 0 12px;
+}
+
+.execution-panel__header h3 {
   margin: 0;
   color: var(--ink-500);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.execution-panel__duration {
+  color: var(--ink-500);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.execution-panel__body > * + * {
+  margin-top: 12px;
+}
+
+.execution-panel__idle,
+.execution-panel__pending,
+.execution-panel__empty {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.execution-panel__idle {
+  align-items: flex-start;
+}
+
+.execution-panel__pending {
+  color: var(--magnolia-700);
+  font-weight: 700;
+}
+
+.execution-panel__empty {
+  align-items: flex-start;
+  color: var(--sage-700);
+}
+
+.execution-panel__empty code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--sage-100);
+  font-family: var(--font-mono);
   font-size: 10px;
-  line-height: 1.55;
+}
+
+.execution-output {
+  max-height: 260px;
+  padding: 15px 17px;
+  margin: 0;
+  overflow: auto;
+  color: var(--code-ink);
+  border-radius: 12px;
+  background: var(--code-surface);
+  font: 12px/1.7 var(--font-mono);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.execution-stream__label {
+  margin: 0 0 6px;
+  color: var(--gold-500);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.execution-error {
+  padding: 16px 17px;
+  border: 1px solid #d9c6cd;
+  border-radius: 12px;
+  background: rgba(243, 226, 231, 0.48);
+}
+
+.execution-error[data-kind='timeout'],
+.execution-error[data-kind='runtime'] {
+  border-color: #e0cfae;
+  background: rgba(240, 230, 210, 0.5);
+}
+
+.execution-error__headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0;
+}
+
+.execution-error__type {
+  color: var(--magnolia-700);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.execution-error[data-kind='timeout'] .execution-error__type,
+.execution-error[data-kind='runtime'] .execution-error__type {
+  color: #8a6524;
+}
+
+.execution-error__line {
+  color: var(--ink-500);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.execution-error__message {
+  margin: 7px 0 0;
+  color: var(--ink-800);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.execution-error__details {
+  margin-top: 12px;
+}
+
+.execution-error__details summary {
+  color: var(--ink-650);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.execution-error__details summary:hover {
+  color: var(--magnolia-700);
+}
+
+.execution-error__details .execution-output {
+  margin-top: 10px;
 }
 
 .exercise-next {
@@ -2342,12 +2581,12 @@
     gap: 9px;
   }
 
-  .code-preview__header {
-    grid-template-columns: auto auto;
+  .code-editor__surface {
+    height: clamp(240px, 52vh, 360px);
   }
 
-  .code-preview__metadata {
-    display: none;
+  .workspace-actions {
+    gap: 14px;
   }
 
   .exercise-example dl {

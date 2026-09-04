@@ -173,6 +173,97 @@ export function collectCatalogIssues(): string[] {
     }
   }
 
+  issues.push(...collectPrerequisiteIssues(topicsById))
+  issues.push(...collectExecutionModeIssues(topicsById))
+
+  return issues
+}
+
+/** Um pré-requisito precisa existir, ser da mesma trilha e vir antes na ordem. */
+function collectPrerequisiteIssues(topicsById: ReadonlyMap<string, Topic>): string[] {
+  const issues: string[] = []
+
+  for (const topic of topics) {
+    for (const prerequisiteId of topic.prerequisiteTopicIds) {
+      const prerequisite = topicsById.get(prerequisiteId)
+
+      if (!prerequisite) {
+        issues.push(
+          `Tópico "${topic.id}" declara o pré-requisito inexistente "${prerequisiteId}".`,
+        )
+        continue
+      }
+
+      if (prerequisite.trackId !== topic.trackId) {
+        issues.push(
+          `Tópico "${topic.id}" declara como pré-requisito "${prerequisiteId}", que é de outra trilha.`,
+        )
+        continue
+      }
+
+      if (prerequisite.order >= topic.order) {
+        issues.push(
+          `Tópico "${topic.id}" (ordem ${topic.order}) declara como pré-requisito "${prerequisiteId}" (ordem ${prerequisite.order}), que não vem antes dele.`,
+        )
+      }
+    }
+  }
+
+  return issues
+}
+
+/**
+ * A regra pedagógica central da trilha: um exercício só pode exigir que o aluno
+ * escreva uma função depois do tópico em que funções são ensinadas. Sem esta
+ * checagem, um exercício de função num tópico inicial passa despercebido — foi
+ * exatamente o que aconteceu com "Apresentando um perfil" em Variáveis.
+ */
+function collectExecutionModeIssues(topicsById: ReadonlyMap<string, Topic>): string[] {
+  const issues: string[] = []
+
+  for (const track of tracks) {
+    const unlockTopic = track.topics.find(
+      (topic) => topic.unlocksExecutionMode === 'function',
+    )
+    const functionExercises = exercises.filter(
+      (exercise) => exercise.trackId === track.id && exercise.executionMode === 'function',
+    )
+
+    if (functionExercises.length > 0 && !unlockTopic) {
+      issues.push(
+        `A trilha "${track.id}" tem exercícios de função, mas nenhum tópico declara unlocksExecutionMode: 'function'.`,
+      )
+      continue
+    }
+
+    if (!unlockTopic) {
+      continue
+    }
+
+    for (const exercise of functionExercises) {
+      const topic = topicsById.get(exercise.topicId)
+
+      if (topic && topic.order < unlockTopic.order) {
+        issues.push(
+          `Exercício "${exercise.id}" pede uma função no tópico "${topic.id}" (ordem ${topic.order}), antes de "${unlockTopic.id}" (ordem ${unlockTopic.order}) ensinar funções.`,
+        )
+      }
+    }
+  }
+
+  // O entryPoint precisa aparecer no starter code: é o nome que o aluno vai
+  // implementar e que o test runner da Fase 3 vai chamar.
+  for (const exercise of exercises) {
+    if (
+      exercise.executionMode === 'function' &&
+      !new RegExp(`\\bdef\\s+${exercise.entryPoint}\\s*\\(`).test(exercise.starterCode)
+    ) {
+      issues.push(
+        `Exercício "${exercise.id}" declara o entryPoint "${exercise.entryPoint}", mas o starter code não define essa função.`,
+      )
+    }
+  }
+
   return issues
 }
 

@@ -10,6 +10,8 @@ const exercise = {
   order: 1,
   estimatedMinutes: 12,
   difficulty: 'Fácil',
+  executionMode: 'function',
+  entryPoint: 'filtrar_intervalo',
   instructions: [
     'Implemente a função filtrar_intervalo.',
     'Receba um array NumPy, um limite mínimo e um limite máximo.',

@@ -1,53 +1,53 @@
 import type { Exercise } from '../../../src/types'
 
 const exercise = {
-  id: 'prog-lists-001',
+  id: 'prog-loops-002',
   trackId: 'programming',
-  topicId: 'programming-lists',
+  topicId: 'programming-loops',
   title: 'Somando apenas valores positivos',
   description:
     'Percorra uma lista e some somente os valores maiores que zero.',
-  order: 1,
-  estimatedMinutes: 12,
-  difficulty: 'Fácil',
+  order: 2,
+  estimatedMinutes: 10,
+  difficulty: 'Fácil+',
+  executionMode: 'script',
   instructions: [
-    'Implemente a função somar_positivos.',
-    'Percorra todos os números recebidos em valores.',
-    'Inclua na soma apenas números maiores que zero.',
-    'Retorne zero quando não houver valores positivos.',
+    'Percorra todos os números da lista valores.',
+    'Some ao total apenas os números maiores que zero.',
+    'Exiba o total depois que o loop terminar.',
+    'Quando não houver nenhum positivo, o total exibido deve ser 0.',
   ],
   starterCode:
-    'def somar_positivos(valores):\n    total = 0\n    # Percorra a lista e atualize o total.\n    return total',
+    'valores = [4, -2, 7, 0]\ntotal = 0\n\n# Some apenas os valores positivos\n\nprint(total)\n',
   examples: [
     {
-      input: 'somar_positivos([4, -2, 7, 0])',
       output: '11',
-      explanation: 'Somente 4 e 7 entram na soma.',
+      explanation: 'Somente 4 e 7 entram na soma; -2 e 0 são ignorados.',
     },
     {
-      input: 'somar_positivos([-3, 0, -1])',
       output: '0',
-      explanation: 'A lista não possui números maiores que zero.',
+      explanation:
+        'Se valores fosse [-3, 0, -1], nenhum item entraria e o total continuaria zero.',
     },
   ],
   hints: [
     {
-      id: 'prog-lists-001-hint-1',
+      id: 'prog-loops-002-hint-1',
       order: 1,
-      text: 'Use um laço for para observar um valor de cada vez.',
+      text: 'Use um for para observar um valor de cada vez.',
     },
     {
-      id: 'prog-lists-001-hint-2',
+      id: 'prog-loops-002-hint-2',
       order: 2,
-      text: 'Antes de atualizar o acumulador, verifique se o valor atual é maior que zero.',
+      text: 'Antes de atualizar o total, verifique com um if se o valor atual é maior que zero.',
     },
     {
-      id: 'prog-lists-001-hint-3',
+      id: 'prog-loops-002-hint-3',
       order: 3,
-      text: 'Mantenha o return fora do laço para terminar de percorrer toda a lista.',
+      text: 'O if fica dentro do for, então sua linha de soma leva duas indentações.',
     },
   ],
-  skill: 'Percorrer uma lista e acumular itens que atendem a uma condição.',
+  skill: 'Combinar loop e condicional para acumular apenas itens selecionados.',
   packages: [],
 } satisfies Exercise
 
