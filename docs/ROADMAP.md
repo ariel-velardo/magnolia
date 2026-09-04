@@ -1,624 +1,428 @@
-\# Roadmap do Magnolia
+# Roadmap do Magnolia
 
-
-
-\## Visão
-
-
+## Visão
 
 O Magnolia será desenvolvido incrementalmente.
 
-
-
 O objetivo da primeira versão não é possuir grande quantidade de conteúdo.
-
-
 
 O objetivo é provar que o ciclo completo funciona:
 
+**aprender → programar → executar → testar → receber feedback → registrar progresso**
 
+---
 
-\*\*aprender → programar → executar → testar → receber feedback → registrar progresso\*\*
-
-
-
-\---
-
-
-
-\## Fase 0 — Fundação
-
-
+## Fase 0 — Fundação
 
 Status: concluída.
 
-
-
 Inclui:
 
+- criação do projeto;
 
+- React;
 
-\- criação do projeto;
+- TypeScript;
 
-\- React;
+- Vite;
 
-\- TypeScript;
+- ESLint;
 
-\- Vite;
+- Git;
 
-\- ESLint;
+- GitHub;
 
-\- Git;
+- estrutura inicial de diretórios;
 
-\- GitHub;
+- documentação base;
 
-\- estrutura inicial de diretórios;
-
-\- documentação base;
-
-\- instruções para agentes.
-
-
+- instruções para agentes.
 
 Critério de conclusão:
 
+    npm run lint
 
-
-&#x20;   npm run lint
-
-&#x20;   npm run build
-
-
+    npm run build
 
 devem funcionar sem erro.
 
+---
 
-
-\---
-
-
-
-\## Fase 1 — Estrutura do produto
-
-
+## Fase 1 — Estrutura do produto
 
 Objetivo:
-
-
 
 transformar o scaffold do Vite em uma aplicação Magnolia navegável.
 
-
-
 Implementar:
 
+- identidade visual inicial;
 
+- layout principal;
 
-\- identidade visual inicial;
+- navegação;
 
-\- layout principal;
+- Dashboard;
 
-\- navegação;
+- visualização de trilhas;
 
-\- Dashboard;
+- página de aula;
 
-\- visualização de trilhas;
+- página de exercício;
 
-\- página de aula;
+- tipos de domínio;
 
-\- página de exercício;
-
-\- tipos de domínio;
-
-\- carregamento declarativo de conteúdo.
-
-
+- carregamento declarativo de conteúdo.
 
 Ainda não é necessário executar Python nesta fase para todas as telas.
 
-
-
 Critério de conclusão:
-
-
 
 o usuário consegue navegar desde o Dashboard até um exercício real carregado a partir do conteúdo.
 
+---
 
-
-\---
-
-
-
-\## Fase 2 — Ambiente de programação
-
-
+## Fase 2 — Ambiente de programação
 
 Objetivo:
-
-
 
 permitir escrever e executar Python.
 
-
-
 Implementar:
 
+- Monaco Editor;
 
+- integração com Pyodide;
 
-\- Monaco Editor;
+- estado de carregamento;
 
-\- integração com Pyodide;
+- execução de código;
 
-\- estado de carregamento;
+- captura de stdout;
 
-\- execução de código;
+- captura de exceptions;
 
-\- captura de stdout;
-
-\- captura de exceptions;
-
-\- feedback de erro de sintaxe e runtime.
-
-
+- feedback de erro de sintaxe e runtime.
 
 Critério de conclusão:
-
-
 
 o usuário consegue escrever Python no editor e executar o código no navegador.
 
+---
 
-
-\---
-
-
-
-\## Fase 3 — Sistema de avaliação
-
-
+## Fase 3 — Sistema de avaliação
 
 Objetivo:
-
-
 
 transformar execução em prática estruturada.
 
-
-
 Implementar:
 
+- modelo de TestCase;
 
+- test runner;
 
-\- modelo de TestCase;
+- evaluator;
 
-\- test runner;
+- testes públicos;
 
-\- evaluator;
+- testes internos;
 
-\- testes públicos;
+- comparação expected vs received;
 
-\- testes internos;
+- resumo de testes;
 
-\- comparação expected vs received;
-
-\- resumo de testes;
-
-\- feedback de erro.
-
-
+- feedback de erro.
 
 Critério de conclusão:
-
-
 
 um exercício consegue informar automaticamente quantos testes foram aprovados e orientar o usuário quando existem falhas.
 
+---
 
-
-\---
-
-
-
-\## Fase 4 — Progresso
-
-
+## Fase 4 — Progresso
 
 Objetivo:
-
-
 
 registrar evolução do usuário.
 
-
-
 Implementar:
 
+- localStorage;
 
+- exercícios iniciados;
 
-\- localStorage;
+- exercícios concluídos;
 
-\- exercícios iniciados;
+- número de tentativas;
 
-\- exercícios concluídos;
+- progresso por trilha;
 
-\- número de tentativas;
+- progresso por tópico;
 
-\- progresso por trilha;
-
-\- progresso por tópico;
-
-\- cards de progresso no Dashboard.
-
-
+- cards de progresso no Dashboard.
 
 Critério de conclusão:
 
-
-
 fechar e reabrir o navegador não apaga o progresso local.
 
+---
 
-
-\---
-
-
-
-\## Fase 5 — Conteúdo inicial
-
-
+## Fase 5 — Conteúdo inicial
 
 Objetivo:
-
-
 
 transformar a infraestrutura em uma plataforma utilizável.
 
-
-
 Referência inicial:
 
-
-
-\### Programação
-
-
+### Programação
 
 Aproximadamente 12 desafios sobre:
 
+- variáveis;
 
+- condicionais;
 
-\- variáveis;
+- loops;
 
-\- condicionais;
+- strings;
 
-\- loops;
+- listas;
 
-\- strings;
+- funções;
 
-\- listas;
+- dicionários;
 
-\- funções;
+- sets;
 
-\- dicionários;
+- comprehensions.
 
-\- sets;
-
-\- comprehensions.
-
-
-
-\### Data Science
-
-
+### Data Science
 
 Aproximadamente 8 desafios.
 
-
-
 NumPy:
 
+- arrays;
 
+- indexação;
 
-\- arrays;
+- boolean masks;
 
-\- indexação;
-
-\- boolean masks;
-
-\- operações vetorizadas.
-
-
+- operações vetorizadas.
 
 Pandas:
 
+- DataFrames;
 
+- filtros;
 
-\- DataFrames;
+- criação de colunas;
 
-\- filtros;
-
-\- criação de colunas;
-
-\- groupby.
-
-
+- groupby.
 
 Cada bloco de conteúdo deve possuir contexto e exemplos antes dos exercícios quando necessário.
 
+---
 
-
-\---
-
-
-
-\## Fase 6 — Qualidade da V1
-
-
+## Fase 6 — Qualidade da V1
 
 Objetivo:
 
-
-
 transformar o protótipo funcional em uma aplicação sólida.
-
-
 
 Revisar:
 
+- responsividade;
 
+- acessibilidade;
 
-\- responsividade;
+- estados vazios;
 
-\- acessibilidade;
+- loading;
 
-\- estados vazios;
+- mensagens de erro;
 
-\- loading;
+- consistência visual;
 
-\- mensagens de erro;
+- navegação;
 
-\- consistência visual;
+- feedback;
 
-\- navegação;
+- tipos;
 
-\- feedback;
+- testes automatizados;
 
-\- tipos;
-
-\- testes automatizados;
-
-\- documentação.
-
-
+- documentação.
 
 Executar:
 
+    npm test
 
+    npm run lint
 
-&#x20;   npm test
+    npm run build
 
-&#x20;   npm run lint
+---
 
-&#x20;   npm run build
-
-
-
-\---
-
-
-
-\# Definição de V1 concluída
-
-
+# Definição de V1 concluída
 
 A V1 será considerada funcional quando:
 
+- existir Dashboard;
 
+- existirem trilhas de Programação e Data Science;
 
-\- existir Dashboard;
+- existirem aulas ou contexto didático;
 
-\- existirem trilhas de Programação e Data Science;
+- exercícios forem carregados declarativamente;
 
-\- existirem aulas ou contexto didático;
+- houver editor Monaco;
 
-\- exercícios forem carregados declarativamente;
+- Python executar com Pyodide;
 
-\- houver editor Monaco;
+- testes automáticos funcionarem;
 
-\- Python executar com Pyodide;
+- erros Python forem tratados;
 
-\- testes automáticos funcionarem;
+- feedback for apresentado;
 
-\- erros Python forem tratados;
+- progresso persistir em localStorage;
 
-\- feedback for apresentado;
+- houver aproximadamente 20 exercícios iniciais;
 
-\- progresso persistir em localStorage;
+- lint passar;
 
-\- houver aproximadamente 20 exercícios iniciais;
+- build passar;
 
-\- lint passar;
+- testes relevantes passarem.
 
-\- build passar;
+---
 
-\- testes relevantes passarem.
+# Pós-V1
 
+## Expansão de Programação
 
+- orientação a objetos;
 
-\---
+- recursão;
 
+- algoritmos;
 
+- estruturas de dados;
 
-\# Pós-V1
+- problemas intermediários;
 
+- problemas avançados.
 
+## Estatística
 
-\## Expansão de Programação
+- estatística descritiva;
 
+- distribuições;
 
+- probabilidade;
 
-\- orientação a objetos;
+- amostragem;
 
-\- recursão;
+- intervalos de confiança;
 
-\- algoritmos;
+- testes de hipótese;
 
-\- estruturas de dados;
+- regressão.
 
-\- problemas intermediários;
+## Machine Learning
 
-\- problemas avançados.
+- preparação de dados;
 
+- treino e teste;
 
+- regressão;
 
-\## Estatística
+- classificação;
 
+- métricas;
 
+- validação;
 
-\- estatística descritiva;
+- feature engineering;
 
-\- distribuições;
+- overfitting;
 
-\- probabilidade;
+- casos aplicados.
 
-\- amostragem;
-
-\- intervalos de confiança;
-
-\- testes de hipótese;
-
-\- regressão.
-
-
-
-\## Machine Learning
-
-
-
-\- preparação de dados;
-
-\- treino e teste;
-
-\- regressão;
-
-\- classificação;
-
-\- métricas;
-
-\- validação;
-
-\- feature engineering;
-
-\- overfitting;
-
-\- casos aplicados.
-
-
-
-\## SQL
-
-
+## SQL
 
 Criar nova engine de exercícios para:
 
+- SELECT;
 
+- filtros;
 
-\- SELECT;
+- agregações;
 
-\- filtros;
+- joins;
 
-\- agregações;
+- window functions;
 
-\- joins;
+- CTEs;
 
-\- window functions;
+- desafios de entrevistas.
 
-\- CTEs;
-
-\- desafios de entrevistas.
-
-
-
-\## Modo entrevista
-
-
+## Modo entrevista
 
 Possibilidades:
 
+- cronômetro;
 
+- sem dicas;
 
-\- cronômetro;
+- testes parcialmente ocultos;
 
-\- sem dicas;
+- análise de edge cases;
 
-\- testes parcialmente ocultos;
+- discussão de complexidade;
 
-\- análise de edge cases;
+- desafios no estilo de processos seletivos internacionais.
 
-\- discussão de complexidade;
-
-\- desafios no estilo de processos seletivos internacionais.
-
-
-
-\## Analytics de aprendizado
-
-
+## Analytics de aprendizado
 
 Possibilidades:
 
+- taxa de acerto;
 
+- tentativas por exercício;
 
-\- taxa de acerto;
+- tempo por exercício;
 
-\- tentativas por exercício;
+- dificuldade percebida;
 
-\- tempo por exercício;
+- habilidades fortes;
 
-\- dificuldade percebida;
+- habilidades fracas;
 
-\- habilidades fortes;
+- sugestões de revisão.
 
-\- habilidades fracas;
-
-\- sugestões de revisão.
-
-
-
-\## Inteligência Artificial
-
-
+## Inteligência Artificial
 
 Avaliar futuramente:
 
+- tutor contextual;
 
+- geração de dicas;
 
-\- tutor contextual;
+- explicação de erros;
 
-\- geração de dicas;
-
-\- explicação de erros;
-
-\- recomendação adaptativa.
-
-
+- recomendação adaptativa.
 
 IA não faz parte da infraestrutura necessária da V1.
 
+---
 
-
-\---
-
-
-
-\# Regra de roadmap
-
-
+# Regra de roadmap
 
 Não iniciar uma fase futura apenas porque ela parece interessante.
-
-
 
 Primeiro garantir que a fase atual entrega valor e está funcionando corretamente.
 

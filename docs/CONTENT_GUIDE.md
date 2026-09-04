@@ -1,982 +1,610 @@
-\# Guia de Conteúdo do Magnolia
+# Guia de Conteúdo do Magnolia
 
-
-
-\## 1. Objetivo
-
-
+## 1. Objetivo
 
 Este documento define como criar aulas e exercícios para o Magnolia.
 
-
-
 O conteúdo deve ser didático, progressivo e orientado à prática.
-
-
 
 O objetivo não é apenas apresentar sintaxe.
 
-
-
 O aluno deve entender:
 
+- o conceito;
 
+- por que ele existe;
 
-\- o conceito;
+- como utilizá-lo;
 
-\- por que ele existe;
+- erros comuns;
 
-\- como utilizá-lo;
+- como resolver problemas utilizando o conceito.
 
-\- erros comuns;
+---
 
-\- como resolver problemas utilizando o conceito.
-
-
-
-\---
-
-
-
-\## 2. Fluxo pedagógico
-
-
+## 2. Fluxo pedagógico
 
 Sempre que fizer sentido, seguir:
 
+    Conceito
 
+        ↓
 
-&#x20;   Conceito
+    Explicação
 
-&#x20;       ↓
+        ↓
 
-&#x20;   Explicação
+    Exemplo
 
-&#x20;       ↓
+        ↓
 
-&#x20;   Exemplo
+    Exercício
 
-&#x20;       ↓
+        ↓
 
-&#x20;   Exercício
+    Execução
 
-&#x20;       ↓
+        ↓
 
-&#x20;   Execução
+    Feedback
 
-&#x20;       ↓
+        ↓
 
-&#x20;   Feedback
-
-&#x20;       ↓
-
-&#x20;   Nova tentativa
-
-
+    Nova tentativa
 
 Evitar saltar diretamente para exercícios difíceis sem fornecer contexto suficiente.
 
+---
 
-
-\---
-
-
-
-\## 3. Linguagem
-
-
+## 3. Linguagem
 
 O conteúdo inicial deve ser escrito em português brasileiro.
 
-
-
 O texto deve ser:
 
+- claro;
 
+- direto;
 
-\- claro;
+- didático;
 
-\- direto;
+- tecnicamente correto;
 
-\- didático;
-
-\- tecnicamente correto;
-
-\- sem formalidade excessiva.
-
-
+- sem formalidade excessiva.
 
 Evitar:
 
+- frases motivacionais genéricas;
 
+- linguagem corporativa;
 
-\- frases motivacionais genéricas;
+- explicações excessivamente abstratas;
 
-\- linguagem corporativa;
+- parágrafos enormes;
 
-\- explicações excessivamente abstratas;
-
-\- parágrafos enormes;
-
-\- jargão sem explicação.
-
-
+- jargão sem explicação.
 
 Termos técnicos em inglês podem ser mantidos quando forem padrão da área.
 
-
-
 Exemplos:
 
+- DataFrame;
 
+- feature;
 
-\- DataFrame;
+- overfitting;
 
-\- feature;
+- train/test split;
 
-\- overfitting;
+- groupby;
 
-\- train/test split;
+- boolean mask.
 
-\- groupby;
+---
 
-\- boolean mask.
-
-
-
-\---
-
-
-
-\## 4. Aula
-
-
+## 4. Aula
 
 Uma aula deve responder, quando aplicável:
 
-
-
-\### O que é?
-
-
+### O que é?
 
 Explicar o conceito.
 
-
-
-\### Por que usar?
-
-
+### Por que usar?
 
 Mostrar o problema que ele resolve.
 
-
-
-\### Como funciona?
-
-
+### Como funciona?
 
 Apresentar a lógica.
 
-
-
-\### Exemplo
-
-
+### Exemplo
 
 Mostrar uma aplicação simples.
 
-
-
-\### Cuidados
-
-
+### Cuidados
 
 Apresentar erros comuns ou limitações.
 
-
-
-\### Prática
-
-
+### Prática
 
 Conectar a aula aos exercícios relacionados.
 
+---
 
-
-\---
-
-
-
-\## 5. Exercício
-
-
+## 5. Exercício
 
 Um exercício deve possuir um objetivo principal claro.
 
-
-
 Evitar desafios que testem cinco conceitos novos ao mesmo tempo.
-
-
 
 Um exercício pode conter:
 
+- título;
 
+- tópico;
 
-\- título;
+- dificuldade;
 
-\- tópico;
+- descrição;
 
-\- dificuldade;
+- instruções;
 
-\- descrição;
+- starter code;
 
-\- instruções;
+- exemplos;
 
-\- starter code;
+- dicas;
 
-\- exemplos;
+- testes;
 
-\- dicas;
+- metadados.
 
-\- testes;
+---
 
-\- metadados.
-
-
-
-\---
-
-
-
-\## 6. Títulos
-
-
+## 6. Títulos
 
 Títulos devem explicar o desafio de forma curta.
 
-
-
 Preferir:
 
+    Somando valores de uma lista
 
+    Encontrando o maior número
 
-&#x20;   Somando valores de uma lista
+    Filtrando clientes ativos
 
-&#x20;   Encontrando o maior número
-
-&#x20;   Filtrando clientes ativos
-
-&#x20;   Média por categoria
-
-
+    Média por categoria
 
 Evitar:
 
+    Desafio 01
 
+    Exercício Python
 
-&#x20;   Desafio 01
+    Teste de conhecimento
 
-&#x20;   Exercício Python
+---
 
-&#x20;   Teste de conhecimento
-
-
-
-\---
-
-
-
-\## 7. IDs
-
-
+## 7. IDs
 
 IDs devem ser estáveis e legíveis.
 
-
-
 Sugestão:
 
+    prog-variables-001
 
+    prog-loops-001
 
-&#x20;   prog-variables-001
+    prog-functions-002
 
-&#x20;   prog-loops-001
+    ds-numpy-001
 
-&#x20;   prog-functions-002
-
-&#x20;   ds-numpy-001
-
-&#x20;   ds-pandas-groupby-001
-
-
+    ds-pandas-groupby-001
 
 Depois de publicado, evitar alterar o ID de um exercício porque ele poderá estar associado ao progresso salvo.
 
+---
 
-
-\---
-
-
-
-\## 8. Dificuldade
-
-
+## 8. Dificuldade
 
 A dificuldade deve refletir o raciocínio exigido, não apenas o tamanho do código.
 
-
-
 Escala inicial:
 
-
-
-\### Fundamentos
-
-
+### Fundamentos
 
 Aplicação direta de um conceito recém-apresentado.
 
-
-
-\### Fácil
-
-
+### Fácil
 
 Exige pequena combinação de conceitos conhecidos.
 
-
-
-\### Fácil+
-
-
+### Fácil+
 
 Exige interpretação um pouco maior ou tratamento de casos simples.
 
-
-
-\### Intermediário I
-
-
+### Intermediário I
 
 Combina diferentes conceitos e exige decomposição do problema.
 
-
-
-\### Intermediário II
-
-
+### Intermediário II
 
 Exige maior autonomia e atenção a edge cases.
 
-
-
-\### Intermediário III
-
-
+### Intermediário III
 
 Problema significativamente menos guiado.
 
-
-
-\### Avançado
-
-
+### Avançado
 
 Pode envolver algoritmos, decisões de design ou raciocínio mais complexo.
 
-
-
 Não é necessário preencher todos os níveis na V1.
 
+---
 
-
-\---
-
-
-
-\## 9. Starter code
-
-
+## 9. Starter code
 
 O starter code deve reduzir trabalho irrelevante sem resolver o desafio.
 
-
-
 Exemplo adequado:
 
+    def calcular\_media(valores):
 
+        # escreva sua solução aqui
 
-&#x20;   def calcular\_media(valores):
-
-&#x20;       # escreva sua solução aqui
-
-&#x20;       pass
-
-
+        pass
 
 Evitar entregar grande parte da lógica pronta.
 
-
-
 Também evitar exigir boilerplate que não faz parte do conhecimento sendo treinado.
 
+---
 
-
-\---
-
-
-
-\## 10. Exemplos
-
-
+## 10. Exemplos
 
 Exemplos devem ajudar o usuário a entender o contrato do exercício.
 
-
-
 Exemplo:
 
+    Entrada:
 
+    \[2, 4, 6]
 
-&#x20;   Entrada:
+    Saída esperada:
 
-&#x20;   \[2, 4, 6]
-
-
-
-&#x20;   Saída esperada:
-
-&#x20;   12
-
-
+    12
 
 Quando necessário, mostrar mais de um exemplo.
 
-
-
 Os exemplos não devem cobrir todos os edge cases utilizados nos testes.
 
+---
 
-
-\---
-
-
-
-\## 11. Testes públicos
-
-
+## 11. Testes públicos
 
 Testes públicos ajudam o aluno a compreender o comportamento esperado.
 
-
-
 Devem testar casos representativos e simples.
-
-
 
 Exemplo conceitual:
 
+    soma(\[1, 2, 3]) == 6
 
+---
 
-&#x20;   soma(\[1, 2, 3]) == 6
-
-
-
-\---
-
-
-
-\## 12. Testes internos
-
-
+## 12. Testes internos
 
 Testes internos devem avaliar:
 
+- edge cases;
 
+- entradas diferentes dos exemplos;
 
-\- edge cases;
+- erros comuns;
 
-\- entradas diferentes dos exemplos;
-
-\- erros comuns;
-
-\- generalização da solução.
-
-
+- generalização da solução.
 
 Não utilizar testes capciosos sem valor pedagógico.
 
-
-
 Um teste interno deve verificar se o aluno realmente resolveu o problema, não tentar enganá-lo.
 
+---
 
-
-\---
-
-
-
-\## 13. Comparação de resultados
-
-
+## 13. Comparação de resultados
 
 Comparações simples podem utilizar igualdade.
 
-
-
 Dados numéricos com ponto flutuante podem exigir tolerância.
-
-
 
 Para NumPy e Pandas, utilizar comparadores adequados ao tipo de objeto.
 
-
-
 Evitar validar objetos complexos através de conversão arbitrária para string.
 
+---
 
-
-\---
-
-
-
-\## 14. Feedback
-
-
+## 14. Feedback
 
 Feedback deve ajudar sem entregar imediatamente a solução.
 
-
-
 Uma boa sequência é:
 
+    tentativa
 
+        ↓
 
-&#x20;   tentativa
+    teste falha
 
-&#x20;       ↓
+        ↓
 
-&#x20;   teste falha
+    indicação do comportamento incorreto
 
-&#x20;       ↓
+        ↓
 
-&#x20;   indicação do comportamento incorreto
+    nova tentativa
 
-&#x20;       ↓
+        ↓
 
-&#x20;   nova tentativa
+    dica
 
-&#x20;       ↓
+        ↓
 
-&#x20;   dica
-
-&#x20;       ↓
-
-&#x20;   nova tentativa
-
-
+    nova tentativa
 
 Quando apropriado, mostrar:
 
+- entrada;
 
+- esperado;
 
-\- entrada;
-
-\- esperado;
-
-\- recebido.
-
-
+- recebido.
 
 Para testes internos, mostrar apenas as informações pedagogicamente necessárias.
 
+---
 
-
-\---
-
-
-
-\## 15. Dicas
-
-
+## 15. Dicas
 
 Dicas devem possuir progressão.
 
-
-
-\### Dica 1
-
-
+### Dica 1
 
 Direciona para o conceito.
 
-
-
-\### Dica 2
-
-
+### Dica 2
 
 Direciona para uma estratégia.
 
-
-
-\### Dica 3
-
-
+### Dica 3
 
 Pode ser mais explícita, sem necessariamente fornecer a solução completa.
 
-
-
 Evitar começar com código pronto.
 
+---
 
-
-\---
-
-
-
-\## 16. Soluções
-
-
+## 16. Soluções
 
 Pode existir solução de referência para manutenção e validação.
 
-
-
 Ela não deve ser apresentada automaticamente na interface do aluno.
-
-
 
 Também não deve ser necessária para avaliar todas as respostas.
 
-
-
 A avaliação deve verificar comportamento, não exigir que o código do aluno seja igual à solução de referência.
 
+---
 
-
-\---
-
-
-
-\## 17. Programação
-
-
+## 17. Programação
 
 Os exercícios de Programação devem desenvolver gradualmente:
 
+- sintaxe;
 
+- lógica;
 
-\- sintaxe;
+- decomposição;
 
-\- lógica;
+- leitura de problemas;
 
-\- decomposição;
+- tratamento de casos;
 
-\- leitura de problemas;
-
-\- tratamento de casos;
-
-\- clareza de solução.
-
-
+- clareza de solução.
 
 Não transformar a trilha inteira em desafios de algoritmo estilo LeetCode.
 
-
-
 O Magnolia também deve ensinar antes de cobrar.
 
+---
 
-
-\---
-
-
-
-\## 18. Entrevistas técnicas
-
-
+## 18. Entrevistas técnicas
 
 Problemas no estilo de entrevistas devem aparecer progressivamente.
 
-
-
 Eles podem trabalhar:
 
+- arrays;
 
+- strings;
 
-\- arrays;
+- hash maps;
 
-\- strings;
+- sets;
 
-\- hash maps;
+- loops;
 
-\- sets;
+- funções;
 
-\- loops;
+- edge cases;
 
-\- funções;
-
-\- edge cases;
-
-\- complexidade.
-
-
+- complexidade.
 
 Antes de desafios mais difíceis, o usuário deve possuir base suficiente.
 
+---
 
-
-\---
-
-
-
-\## 19. NumPy
-
-
+## 19. NumPy
 
 Exercícios iniciais devem priorizar:
 
+- criação de arrays;
 
+- shape;
 
-\- criação de arrays;
+- indexação;
 
-\- shape;
+- slicing;
 
-\- indexação;
+- boolean masks;
 
-\- slicing;
+- operações vetorizadas;
 
-\- boolean masks;
-
-\- operações vetorizadas;
-
-\- agregações.
-
-
+- agregações.
 
 Quando o objetivo for ensinar NumPy, evitar soluções dependentes de loops Python quando a intenção pedagógica for vetorização.
 
+---
 
-
-\---
-
-
-
-\## 20. Pandas
-
-
+## 20. Pandas
 
 Exercícios iniciais devem priorizar:
 
+- criação e leitura de DataFrames pequenos;
 
+- seleção de colunas;
 
-\- criação e leitura de DataFrames pequenos;
+- filtros;
 
-\- seleção de colunas;
+- criação de colunas;
 
-\- filtros;
+- ordenação;
 
-\- criação de colunas;
+- agregações;
 
-\- ordenação;
-
-\- agregações;
-
-\- groupby.
-
-
+- groupby.
 
 Datasets devem ser pequenos e determinísticos na V1.
 
-
-
 Evitar dependência de internet ou APIs externas para exercícios básicos.
 
+---
 
-
-\---
-
-
-
-\## 21. Estatística
-
-
+## 21. Estatística
 
 Quando conteúdo de Estatística for introduzido, evitar exercícios que consistam apenas em aplicar fórmulas.
 
-
-
 Sempre que possível, conectar:
 
+- cálculo;
 
+- interpretação;
 
-\- cálculo;
-
-\- interpretação;
-
-\- contexto.
-
-
+- contexto.
 
 Exemplo:
 
-
-
 não apenas calcular uma média, mas interpretar o que ela representa no problema.
 
+---
 
-
-\---
-
-
-
-\## 22. Machine Learning
-
-
+## 22. Machine Learning
 
 Conteúdo futuro deve enfatizar raciocínio antes de biblioteca.
 
-
-
 Exemplos:
 
+- por que separar treino e teste;
 
+- o que significa overfitting;
 
-\- por que separar treino e teste;
+- por que determinada métrica é adequada;
 
-\- o que significa overfitting;
+- como interpretar erro;
 
-\- por que determinada métrica é adequada;
-
-\- como interpretar erro;
-
-\- como evitar leakage.
-
-
+- como evitar leakage.
 
 Não transformar a trilha em tutorial de chamadas do scikit-learn.
 
+---
 
-
-\---
-
-
-
-\## 23. Dados dos exercícios
-
-
+## 23. Dados dos exercícios
 
 Na V1, preferir dados:
 
+- pequenos;
 
+- determinísticos;
 
-\- pequenos;
+- embutidos;
 
-\- determinísticos;
+- fáceis de compreender;
 
-\- embutidos;
-
-\- fáceis de compreender;
-
-\- rápidos de executar.
-
-
+- rápidos de executar.
 
 Evitar downloads externos durante exercícios.
 
+---
 
-
-\---
-
-
-
-\## 24. Progressão
-
-
+## 24. Progressão
 
 Um tópico deve evoluir aproximadamente assim:
 
+    explicação
 
+        ↓
 
-&#x20;   explicação
+    aplicação direta
 
-&#x20;       ↓
+        ↓
 
-&#x20;   aplicação direta
+    pequena variação
 
-&#x20;       ↓
+        ↓
 
-&#x20;   pequena variação
+    combinação de conceitos
 
-&#x20;       ↓
+        ↓
 
-&#x20;   combinação de conceitos
-
-&#x20;       ↓
-
-&#x20;   problema menos guiado
-
-
+    problema menos guiado
 
 Não aumentar dificuldade apenas aumentando o tamanho do enunciado.
 
+---
 
-
-\---
-
-
-
-\## 25. Qualidade
-
-
+## 25. Qualidade
 
 Antes de considerar um exercício pronto, verificar:
 
+- o objetivo está claro?
 
+- o enunciado é suficiente?
 
-\- o objetivo está claro?
+- starter code está correto?
 
-\- o enunciado é suficiente?
+- exemplos estão corretos?
 
-\- starter code está correto?
+- testes cobrem comportamento relevante?
 
-\- exemplos estão corretos?
+- existe pelo menos um caso além do exemplo?
 
-\- testes cobrem comportamento relevante?
+- feedback é útil?
 
-\- existe pelo menos um caso além do exemplo?
+- a dificuldade está coerente?
 
-\- feedback é útil?
+- a solução não está exposta?
 
-\- a dificuldade está coerente?
+- o exercício funciona no runtime atual?
 
-\- a solução não está exposta?
+- o conteúdo ensina algo relevante?
 
-\- o exercício funciona no runtime atual?
+---
 
-\- o conteúdo ensina algo relevante?
-
-
-
-\---
-
-
-
-\## 26. Princípio principal
-
-
+## 26. Princípio principal
 
 Todo exercício deve conseguir responder:
 
-
-
-\*\*Qual habilidade exatamente este exercício está treinando?\*\*
-
-
+**Qual habilidade exatamente este exercício está treinando?**
 
 Se não houver uma resposta clara, o exercício provavelmente precisa ser redesenhado.
 

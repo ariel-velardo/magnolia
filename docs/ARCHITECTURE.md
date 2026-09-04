@@ -1,814 +1,516 @@
-\# Arquitetura do Magnolia
+# Arquitetura do Magnolia
 
-
-
-\## 1. Objetivo
-
-
+## 1. Objetivo
 
 Este documento descreve a arquitetura técnica do Magnolia.
 
-
-
 A arquitetura deve permitir que o produto comece simples, frontend-only, mas possa evoluir sem exigir uma reescrita completa.
-
-
 
 Os principais domínios do sistema são:
 
+- conteúdo educacional;
 
+- interface;
 
-\- conteúdo educacional;
+- execução de código;
 
-\- interface;
+- avaliação;
 
-\- execução de código;
+- feedback;
 
-\- avaliação;
+- progresso.
 
-\- feedback;
+---
 
-\- progresso.
-
-
-
-\---
-
-
-
-\## 2. Princípios
-
-
+## 2. Princípios
 
 A arquitetura deve priorizar:
 
+- simplicidade;
 
+- separação de responsabilidades;
 
-\- simplicidade;
+- baixo acoplamento;
 
-\- separação de responsabilidades;
+- tipagem explícita;
 
-\- baixo acoplamento;
+- conteúdo separado da interface;
 
-\- tipagem explícita;
+- facilidade para adicionar exercícios;
 
-\- conteúdo separado da interface;
-
-\- facilidade para adicionar exercícios;
-
-\- facilidade para adicionar novas tecnologias no futuro.
-
-
+- facilidade para adicionar novas tecnologias no futuro.
 
 Evitar abstrações criadas apenas para antecipar problemas que ainda não existem.
 
+---
 
-
-\---
-
-
-
-\## 3. Arquitetura de alto nível
-
-
+## 3. Arquitetura de alto nível
 
 O fluxo conceitual principal é:
 
+    Conteúdo
 
+       ↓
 
-&#x20;   Conteúdo
+    Página de exercício
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Página de exercício
+    Editor
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Editor
+    Python Runner
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Python Runner
+    Test Runner
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Test Runner
+    Evaluator
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Evaluator
+    Feedback
 
-&#x20;      ↓
+       ↓
 
-&#x20;   Feedback
-
-&#x20;      ↓
-
-&#x20;   Progress
-
-
+    Progress
 
 Cada camada deve possuir responsabilidade clara.
 
+---
 
-
-\---
-
-
-
-\## 4. Conteúdo
-
-
+## 4. Conteúdo
 
 O conteúdo educacional vive fora dos componentes React.
 
-
-
 Diretórios:
 
+    content/programming/
 
-
-&#x20;   content/programming/
-
-&#x20;   content/data-science/
-
-
+    content/data-science/
 
 Cada trilha contém:
 
+    lessons/
 
-
-&#x20;   lessons/
-
-&#x20;   exercises/
-
-
+    exercises/
 
 O objetivo é permitir que novos exercícios sejam adicionados principalmente através de novos arquivos de conteúdo.
 
-
-
 Componentes React não devem possuir enunciados, soluções ou testes específicos hardcoded.
 
+---
 
-
-\---
-
-
-
-\## 5. Modelo de domínio
-
-
+## 5. Modelo de domínio
 
 Os principais tipos deverão ser definidos em:
 
-
-
-&#x20;   src/types/
-
-
+    src/types/
 
 Entidades conceituais esperadas incluem:
 
-
-
-\### Lesson
-
-
+### Lesson
 
 Representa conteúdo didático.
 
-
-
 Pode conter:
 
+- id;
 
+- título;
 
-\- id;
+- trilha;
 
-\- título;
+- tópico;
 
-\- trilha;
+- nível;
 
-\- tópico;
+- objetivos;
 
-\- nível;
+- explicação;
 
-\- objetivos;
+- exemplos;
 
-\- explicação;
+- exercícios relacionados.
 
-\- exemplos;
-
-\- exercícios relacionados.
-
-
-
-\### Exercise
-
-
+### Exercise
 
 Representa um desafio executável.
 
-
-
 Pode conter:
 
+- id;
 
+- título;
 
-\- id;
+- trilha;
 
-\- título;
+- tópico;
 
-\- trilha;
+- dificuldade;
 
-\- tópico;
+- descrição;
 
-\- dificuldade;
+- instruções;
 
-\- descrição;
+- starterCode;
 
-\- instruções;
+- exemplos;
 
-\- starterCode;
+- hints;
 
-\- exemplos;
+- testes;
 
-\- hints;
+- metadados.
 
-\- testes;
-
-\- metadados.
-
-
-
-\### TestCase
-
-
+### TestCase
 
 Representa um caso utilizado para avaliar a solução.
 
-
-
 Pode conter:
 
+- id;
 
+- tipo;
 
-\- id;
+- entrada;
 
-\- tipo;
+- saída esperada;
 
-\- entrada;
+- visibilidade;
 
-\- saída esperada;
+- tolerância, quando necessária.
 
-\- visibilidade;
-
-\- tolerância, quando necessária.
-
-
-
-\### TestResult
-
-
+### TestResult
 
 Representa o resultado de um teste.
 
-
-
 Pode conter:
 
+- status;
 
+- valor recebido;
 
-\- status;
+- valor esperado;
 
-\- valor recebido;
+- erro;
 
-\- valor esperado;
+- mensagem.
 
-\- erro;
-
-\- mensagem.
-
-
-
-\### ExerciseResult
-
-
+### ExerciseResult
 
 Representa o resultado completo da submissão.
 
-
-
 Pode conter:
 
+- total de testes;
 
+- testes aprovados;
 
-\- total de testes;
+- testes reprovados;
 
-\- testes aprovados;
+- resultados individuais;
 
-\- testes reprovados;
+- erro de execução;
 
-\- resultados individuais;
+- status final.
 
-\- erro de execução;
-
-\- status final.
-
-
-
-\### Progress
-
-
+### Progress
 
 Representa o progresso local do usuário.
 
-
-
 Pode conter:
 
+- exercícios iniciados;
 
+- exercícios concluídos;
 
-\- exercícios iniciados;
+- tentativas;
 
-\- exercícios concluídos;
+- acertos;
 
-\- tentativas;
+- progresso por trilha;
 
-\- acertos;
-
-\- progresso por trilha;
-
-\- progresso por tópico.
-
-
+- progresso por tópico.
 
 Esses modelos poderão evoluir conforme a implementação real mostrar necessidade.
 
+---
 
-
-\---
-
-
-
-\## 6. Interface
-
-
+## 6. Interface
 
 Componentes vivem em:
 
-
-
-&#x20;   src/components/
-
-
+    src/components/
 
 Subdomínios:
 
+    common/
 
+    editor/
 
-&#x20;   common/
+    exercise/
 
-&#x20;   editor/
+    lesson/
 
-&#x20;   exercise/
-
-&#x20;   lesson/
-
-&#x20;   progress/
-
-
+    progress/
 
 Páginas vivem em:
 
-
-
-&#x20;   src/pages/
-
-
+    src/pages/
 
 Layouts compartilhados vivem em:
 
-
-
-&#x20;   src/layouts/
-
-
+    src/layouts/
 
 A camada visual deve consumir estados e resultados estruturados.
 
-
-
 Ela não deve executar diretamente lógica do Pyodide ou dos testes.
 
+---
 
-
-\---
-
-
-
-\## 7. Python Runner
-
-
+## 7. Python Runner
 
 Local:
 
-
-
-&#x20;   src/engine/pythonRunner/
-
-
+    src/engine/pythonRunner/
 
 Responsabilidade:
 
+- carregar Pyodide;
 
+- manter uma instância reutilizável;
 
-\- carregar Pyodide;
+- executar código;
 
-\- manter uma instância reutilizável;
+- capturar stdout;
 
-\- executar código;
+- capturar exceptions;
 
-\- capturar stdout;
+- executar funções do aluno;
 
-\- capturar exceptions;
+- transmitir entradas;
 
-\- executar funções do aluno;
-
-\- transmitir entradas;
-
-\- recuperar resultados.
-
-
+- recuperar resultados.
 
 A aplicação deve evitar recarregar o runtime Python em cada execução.
 
-
-
 O carregamento do Pyodide deverá ser assíncrono e seu estado deverá ser apresentado corretamente na interface.
-
-
 
 Possíveis estados:
 
+    idle
 
+    loading
 
-&#x20;   idle
+    ready
 
-&#x20;   loading
+    running
 
-&#x20;   ready
-
-&#x20;   running
-
-&#x20;   error
-
-
+    error
 
 A implementação deve evitar bloquear a interface sempre que razoavelmente possível.
 
-
-
 Código com loop infinito é um risco em execução no navegador. Se a primeira implementação não possuir mecanismo robusto de timeout ou Worker, essa limitação deve permanecer isolada no runner e ser documentada.
 
+---
 
-
-\---
-
-
-
-\## 8. Dependências Python
-
-
+## 8. Dependências Python
 
 NumPy e Pandas não precisam ser carregados em todos os exercícios.
 
-
-
 Quando possível, carregar bibliotecas adicionais apenas quando o exercício precisar delas.
-
-
 
 Um exercício poderá futuramente declarar dependências Python.
 
-
-
 Exemplo conceitual:
 
-
-
-&#x20;   packages: \["numpy"]
-
-
+    packages: \["numpy"]
 
 ou:
 
-
-
-&#x20;   packages: \["pandas"]
-
-
+    packages: \["pandas"]
 
 A implementação concreta poderá escolher outra representação.
 
+---
 
-
-\---
-
-
-
-\## 9. Test Runner
-
-
+## 9. Test Runner
 
 Local:
 
-
-
-&#x20;   src/engine/testRunner/
-
-
+    src/engine/testRunner/
 
 Responsabilidade:
 
+- receber código executado;
 
+- executar diferentes casos de teste;
 
-\- receber código executado;
+- comparar resultado esperado e recebido;
 
-\- executar diferentes casos de teste;
-
-\- comparar resultado esperado e recebido;
-
-\- produzir resultados estruturados.
-
-
+- produzir resultados estruturados.
 
 Não deve possuir responsabilidade visual.
 
-
-
 O sistema deverá suportar múltiplos testes por exercício.
 
+---
 
-
-\---
-
-
-
-\## 10. Testes públicos e internos
-
-
+## 10. Testes públicos e internos
 
 Existem conceitualmente dois tipos de teste:
 
-
-
-\### Públicos
-
-
+### Públicos
 
 Podem revelar entrada e saída ao usuário.
 
-
-
-\### Internos
-
-
+### Internos
 
 São utilizados para verificar edge cases sem revelar todos os detalhes da avaliação.
 
-
-
 Como a V1 é totalmente frontend, testes enviados ao navegador não são realmente secretos do ponto de vista de segurança.
-
-
 
 Portanto, "teste interno" significa:
 
-
-
-\*\*não mostrado pela interface normal do Magnolia\*\*
-
-
+**não mostrado pela interface normal do Magnolia**
 
 e não:
 
-
-
-\*\*inacessível tecnicamente ao usuário\*\*
-
-
+**inacessível tecnicamente ao usuário**
 
 Caso no futuro seja necessário proteger realmente os testes, a avaliação deverá migrar para backend.
 
+---
 
-
-\---
-
-
-
-\## 11. Evaluator
-
-
+## 11. Evaluator
 
 Local:
 
-
-
-&#x20;   src/engine/evaluator/
-
-
+    src/engine/evaluator/
 
 Responsabilidade:
 
+- interpretar resultados do test runner;
 
+- organizar feedback;
 
-\- interpretar resultados do test runner;
+- diferenciar erro de execução de resposta incorreta;
 
-\- organizar feedback;
-
-\- diferenciar erro de execução de resposta incorreta;
-
-\- informar progresso da tentativa.
-
-
+- informar progresso da tentativa.
 
 Não deve entregar imediatamente a solução correta.
 
-
-
 O evaluator deverá produzir dados que a interface possa apresentar de diferentes formas.
 
+---
 
-
-\---
-
-
-
-\## 12. Progresso
-
-
+## 12. Progresso
 
 Local:
 
-
-
-&#x20;   src/progress/
-
-
+    src/progress/
 
 Persistência inicial:
 
-
-
-&#x20;   localStorage
-
-
+    localStorage
 
 A implementação de armazenamento deve ser encapsulada.
 
-
-
 Componentes React não devem acessar diretamente diferentes chaves de localStorage espalhadas pelo projeto.
-
-
 
 Uma camada de persistência deverá centralizar leitura e escrita.
 
-
-
 Sugestão de chave versionada:
 
-
-
-&#x20;   magnolia.progress.v1
-
-
+    magnolia.progress.v1
 
 Versionar o formato facilita futuras migrações.
 
+---
 
-
-\---
-
-
-
-\## 13. Fluxo de uma tentativa
-
-
+## 13. Fluxo de uma tentativa
 
 Fluxo conceitual:
 
+    usuário abre exercício
 
+            ↓
 
-&#x20;   usuário abre exercício
+    starterCode é carregado
 
-&#x20;           ↓
+            ↓
 
-&#x20;   starterCode é carregado
+    usuário altera código
 
-&#x20;           ↓
+            ↓
 
-&#x20;   usuário altera código
+    usuário executa
 
-&#x20;           ↓
+            ↓
 
-&#x20;   usuário executa
+    pythonRunner executa Python
 
-&#x20;           ↓
+            ↓
 
-&#x20;   pythonRunner executa Python
+    testRunner executa casos
 
-&#x20;           ↓
+            ↓
 
-&#x20;   testRunner executa casos
+    evaluator interpreta resultados
 
-&#x20;           ↓
+            ↓
 
-&#x20;   evaluator interpreta resultados
+    interface apresenta feedback
 
-&#x20;           ↓
+            ↓
 
-&#x20;   interface apresenta feedback
+    progress registra tentativa
 
-&#x20;           ↓
+            ↓
 
-&#x20;   progress registra tentativa
+    exercício pode ser marcado como concluído
 
-&#x20;           ↓
+---
 
-&#x20;   exercício pode ser marcado como concluído
-
-
-
-\---
-
-
-
-\## 14. Estado
-
-
+## 14. Estado
 
 Na V1, preferir estado local, hooks e Context quando necessário.
 
-
-
 Não introduzir biblioteca global de estado sem necessidade concreta.
-
-
 
 A aplicação pode ser reavaliada caso sua complexidade cresça significativamente.
 
+---
 
-
-\---
-
-
-
-\## 15. Navegação
-
-
+## 15. Navegação
 
 O Magnolia terá múltiplas experiências:
 
+- dashboard;
 
+- trilhas;
 
-\- dashboard;
+- aulas;
 
-\- trilhas;
+- exercícios;
 
-\- aulas;
-
-\- exercícios;
-
-\- progresso.
-
-
+- progresso.
 
 A implementação poderá utilizar uma solução de roteamento apropriada quando necessário.
 
-
-
 A navegação deve permitir URLs identificáveis para conteúdos importantes, especialmente exercícios.
 
+---
 
-
-\---
-
-
-
-\## 16. Testes automatizados
-
-
+## 16. Testes automatizados
 
 Vitest será utilizado.
 
-
-
 Prioridade de cobertura:
-
-
 
 1\. testRunner;
 
@@ -820,161 +522,103 @@ Prioridade de cobertura:
 
 5\. utilitários importantes.
 
-
-
 Testes de interface deverão focar comportamentos relevantes, não detalhes de implementação.
 
+---
 
-
-\---
-
-
-
-\## 17. Tratamento de erros
-
-
+## 17. Tratamento de erros
 
 A aplicação deverá diferenciar:
 
+- erro ao carregar Pyodide;
 
+- erro de sintaxe Python;
 
-\- erro ao carregar Pyodide;
+- erro de runtime;
 
-\- erro de sintaxe Python;
+- resultado incorreto;
 
-\- erro de runtime;
+- estrutura de exercício inválida;
 
-\- resultado incorreto;
-
-\- estrutura de exercício inválida;
-
-\- erro de persistência.
-
-
+- erro de persistência.
 
 Falhas do código do aluno não podem derrubar a aplicação React.
 
+---
 
-
-\---
-
-
-
-\## 18. Performance
-
-
+## 18. Performance
 
 Cuidados principais:
 
+- não inicializar Pyodide repetidamente;
 
+- carregar dependências Python somente quando necessário;
 
-\- não inicializar Pyodide repetidamente;
+- evitar renders desnecessários;
 
-\- carregar dependências Python somente quando necessário;
+- evitar carregar todo o conteúdo pesado sem necessidade;
 
-\- evitar renders desnecessários;
-
-\- evitar carregar todo o conteúdo pesado sem necessidade;
-
-\- manter editor e runtime independentes.
-
-
+- manter editor e runtime independentes.
 
 Otimizações só devem ser introduzidas quando houver benefício observável.
 
+---
 
-
-\---
-
-
-
-\## 19. Extensibilidade
-
-
+## 19. Extensibilidade
 
 O núcleo não deve assumir que todo exercício futuro será Python.
 
-
-
 No futuro poderão existir engines diferentes, como:
 
+    PythonExercise
 
+    SQLExercise
 
-&#x20;   PythonExercise
-
-&#x20;   SQLExercise
-
-&#x20;   StatisticsExercise
-
-
+    StatisticsExercise
 
 A V1, entretanto, deve implementar apenas o necessário para Python.
 
-
-
 Não construir infraestrutura genérica excessiva antes dessa necessidade existir.
 
+---
 
-
-\---
-
-
-
-\## 20. Limites da V1
-
-
+## 20. Limites da V1
 
 A V1 não possui:
 
+- backend;
 
+- login;
 
-\- backend;
+- banco de dados;
 
-\- login;
+- sincronização entre dispositivos;
 
-\- banco de dados;
+- proteção real de testes internos;
 
-\- sincronização entre dispositivos;
+- execução Python em servidor;
 
-\- proteção real de testes internos;
-
-\- execução Python em servidor;
-
-\- tutor com IA.
-
-
+- tutor com IA.
 
 Esses itens poderão ser avaliados posteriormente.
 
+---
 
-
-\---
-
-
-
-\## 21. Critério arquitetural principal
-
-
+## 21. Critério arquitetural principal
 
 Adicionar uma nova aula ou exercício não deve exigir modificar várias camadas da aplicação.
 
-
-
 Idealmente:
 
+    conteúdo novo
 
+        ↓
 
-&#x20;   conteúdo novo
+    aparece automaticamente na plataforma
 
-&#x20;       ↓
+        ↓
 
-&#x20;   aparece automaticamente na plataforma
-
-&#x20;       ↓
-
-&#x20;   usa componentes e engines existentes
-
-
+    usa componentes e engines existentes
 
 Esse é um dos principais critérios para avaliar a qualidade da arquitetura.
 
