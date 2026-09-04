@@ -17,10 +17,13 @@ const exercise = {
     'Execute e confira a saída.',
   ],
   starterCode: 'print(  )\n',
-  examples: [
+  tests: [
     {
-      output: 'Olá, Magnolia',
-      explanation: 'A saída do programa é exatamente esta linha.',
+      id: 'prog-first-steps-001-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout: 'Olá, Magnolia',
+      explanation: 'A mensagem precisa sair exatamente assim, com acento e vírgula.',
     },
   ],
   hints: [

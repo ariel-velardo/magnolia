@@ -12,17 +12,49 @@ const exercise = {
   difficulty: 'Fundamentos',
   executionMode: 'script',
   instructions: [
-    'Use a lista cidades que já está criada.',
+    'A lista cidades já vem definida: a verificação roda o mesmo programa com listas diferentes.',
     'Exiba três linhas, nesta ordem: o primeiro item, o último item e a quantidade de itens.',
     'Para o último item, use um índice negativo em vez de contar as posições.',
   ],
-  starterCode:
-    'cidades = ["Recife", "Curitiba", "Belém", "Salvador"]\n\n# Exiba primeiro, último e total\n',
-  examples: [
+  starterCode: '# Exiba primeiro, último e total\n',
+  tests: [
     {
-      output: 'Recife\nSalvador\n4',
-      explanation:
-        'O primeiro item está na posição 0 e o último na posição -1; len conta os itens.',
+      id: 'prog-lists-001-case-1',
+      visibility: 'public',
+      label: "cidades = ['Recife', 'Curitiba', 'Belém', 'Salvador']",
+      initialVariables: { cidades: ['Recife', 'Curitiba', 'Belém', 'Salvador'] },
+      expectedStdout: 'Recife\nSalvador\n4',
+      expectedVariables: [
+        { name: 'cidades', value: ['Recife', 'Curitiba', 'Belém', 'Salvador'] },
+      ],
+      explanation: 'Primeiro item, último item e quantidade, nesta ordem.',
+    },
+    {
+      id: 'prog-lists-001-case-2',
+      visibility: 'public',
+      label: "cidades = ['Natal', 'Manaus']",
+      initialVariables: { cidades: ['Natal', 'Manaus'] },
+      expectedStdout: 'Natal\nManaus\n2',
+      expectedVariables: [{ name: 'cidades', value: ['Natal', 'Manaus'] }],
+      explanation: 'Com outra lista, o índice negativo continua achando o último item.',
+    },
+    {
+      id: 'prog-lists-001-case-3',
+      visibility: 'internal',
+      label: "cidades = ['Cuiabá']",
+      initialVariables: { cidades: ['Cuiabá'] },
+      expectedStdout: 'Cuiabá\nCuiabá\n1',
+      expectedVariables: [{ name: 'cidades', value: ['Cuiabá'] }],
+    },
+    {
+      id: 'prog-lists-001-case-4',
+      visibility: 'internal',
+      label: "cidades = ['Belo Horizonte', 'Santos', 'Olinda']",
+      initialVariables: { cidades: ['Belo Horizonte', 'Santos', 'Olinda'] },
+      expectedStdout: 'Belo Horizonte\nOlinda\n3',
+      expectedVariables: [
+        { name: 'cidades', value: ['Belo Horizonte', 'Santos', 'Olinda'] },
+      ],
     },
   ],
   hints: [

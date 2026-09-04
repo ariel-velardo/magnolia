@@ -18,11 +18,14 @@ const exercise = {
     'A terceira deve ser Anos de experiência: 6 — use print com dois valores separados por vírgula, sendo o número sem aspas.',
   ],
   starterCode: '# Monte o cartão em três linhas de saída\n',
-  examples: [
+  tests: [
     {
-      output: 'Ana Ribeiro\nAnalista de dados\nAnos de experiência: 6',
+      id: 'prog-first-steps-004-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout: 'Ana Ribeiro\nAnalista de dados\nAnos de experiência: 6',
       explanation:
-        'Na terceira linha, o print recebe dois valores e coloca um espaço entre eles automaticamente.',
+        'Na terceira linha há um único espaço antes do 6, colocado pelo próprio print.',
     },
   ],
   hints: [

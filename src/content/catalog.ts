@@ -3,6 +3,7 @@ import type {
   Exercise,
   LearningItem,
   Lesson,
+  ScriptExercise,
   Topic,
   Track,
   TrackId,
@@ -175,6 +176,117 @@ export function collectCatalogIssues(): string[] {
 
   issues.push(...collectPrerequisiteIssues(topicsById))
   issues.push(...collectExecutionModeIssues(topicsById))
+  issues.push(...collectTestCaseIssues())
+
+  return issues
+}
+
+/**
+ * Um exercício sem teste público não tem exemplo para mostrar, e um caso de
+ * script sem expectativa alguma passa sempre. Nenhuma das duas coisas é
+ * detectável pelos tipos.
+ */
+function collectTestCaseIssues(): string[] {
+  const issues: string[] = []
+  const identifier = /^[A-Za-z_][A-Za-z0-9_]*$/
+
+  for (const exercise of exercises) {
+    const seenCaseIds = new Set<string>()
+
+    for (const testCase of exercise.tests) {
+      if (seenCaseIds.has(testCase.id)) {
+        issues.push(
+          `Exercício "${exercise.id}" repete o id de caso "${testCase.id}".`,
+        )
+      }
+
+      seenCaseIds.add(testCase.id)
+    }
+
+    const publicCases = exercise.tests.filter((testCase) => testCase.visibility === 'public')
+
+    if (exercise.tests.length === 0) {
+      issues.push(`Exercício "${exercise.id}" não declara nenhum caso de teste.`)
+      continue
+    }
+
+    if (publicCases.length === 0) {
+      issues.push(
+        `Exercício "${exercise.id}" não tem caso público, então a página não exibe nenhum exemplo.`,
+      )
+    }
+
+    if (exercise.executionMode === 'script') {
+      for (const testCase of exercise.tests) {
+        if (
+          testCase.expectedStdout === undefined &&
+          (testCase.expectedVariables ?? []).length === 0
+        ) {
+          issues.push(
+            `Caso "${testCase.id}" de "${exercise.id}" não verifica nada: declare expectedStdout ou expectedVariables.`,
+          )
+        }
+
+        for (const variable of testCase.expectedVariables ?? []) {
+          if (!identifier.test(variable.name)) {
+            issues.push(
+              `Caso "${testCase.id}" de "${exercise.id}" espera a variável "${variable.name}", que não é um nome Python válido.`,
+            )
+          }
+        }
+      }
+
+      issues.push(...collectInitialVariableIssues(exercise))
+    }
+  }
+
+  return issues
+}
+
+/**
+ * Regras da entrada injetada. Nenhuma delas quebra a aplicação: elas evitam
+ * exatamente o tipo de erro que passa despercebido — uma injeção que nunca
+ * chega ao aluno, ou um caso que roda sem a variável que os outros recebem.
+ */
+function collectInitialVariableIssues(exercise: ScriptExercise): string[] {
+  const issues: string[] = []
+  const identifier = /^[A-Za-z_][A-Za-z0-9_]*$/
+  const declaredNames = new Set<string>()
+
+  for (const testCase of exercise.tests) {
+    for (const name of Object.keys(testCase.initialVariables ?? {})) {
+      declaredNames.add(name)
+
+      if (!identifier.test(name)) {
+        issues.push(
+          `Caso "${testCase.id}" de "${exercise.id}" injeta "${name}", que não é um nome Python válido.`,
+        )
+      }
+    }
+  }
+
+  for (const name of declaredNames) {
+    // Uma atribuição no starter code roda depois da injeção e a sobrescreve:
+    // todos os casos passariam a avaliar o script com o mesmo valor.
+    if (new RegExp(`^\\s*${name}\\s*=[^=]`, 'm').test(exercise.starterCode)) {
+      issues.push(
+        `Exercício "${exercise.id}" injeta "${name}", mas o starter code atribui esse nome — a entrada de cada caso seria sobrescrita.`,
+      )
+    }
+  }
+
+  // Um caso sem a variável que os outros recebem levantaria NameError, e a
+  // falha apareceria como erro do aluno.
+  for (const testCase of exercise.tests) {
+    const caseNames = new Set(Object.keys(testCase.initialVariables ?? {}))
+    const missing = [...declaredNames].filter((name) => !caseNames.has(name))
+
+    if (missing.length > 0) {
+      issues.push(
+        `Caso "${testCase.id}" de "${exercise.id}" não injeta ${missing.map((name) => `"${name}"`).join(', ')}, que os outros casos injetam.`,
+      )
+    }
+  }
 
   return issues
 }

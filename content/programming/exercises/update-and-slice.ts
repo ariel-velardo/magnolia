@@ -12,17 +12,49 @@ const exercise = {
   difficulty: 'Fácil',
   executionMode: 'script',
   instructions: [
+    'A lista notas já vem definida: a verificação roda o mesmo programa com listas diferentes.',
     'A primeira nota foi lançada errada: substitua o item da posição 0 por 9.0.',
     'Acrescente a nota 10.0 ao final da lista.',
     'Exiba a lista completa.',
     'Em seguida, exiba apenas as duas primeiras notas, usando um slice.',
   ],
-  starterCode: 'notas = [7.0, 8.5, 6.0]\n\n# Corrija, acrescente e recorte\n',
-  examples: [
+  starterCode: '# Corrija, acrescente e recorte\n',
+  tests: [
     {
-      output: '[9.0, 8.5, 6.0, 10.0]\n[9.0, 8.5]',
-      explanation:
-        'O slice para na posição 2, que fica de fora — por isso ele devolve dois itens.',
+      id: 'prog-lists-002-case-1',
+      visibility: 'public',
+      label: 'notas = [7.5, 8.5, 6.25]',
+      initialVariables: { notas: [7.5, 8.5, 6.25] },
+      expectedStdout: '[9.0, 8.5, 6.25, 10.0]\n[9.0, 8.5]',
+      expectedVariables: [{ name: 'notas', value: [9, 8.5, 6.25, 10], tolerance: 1e-9 }],
+      explanation: 'O slice para na posição 2, que fica de fora — por isso dois itens.',
+    },
+    {
+      id: 'prog-lists-002-case-2',
+      visibility: 'public',
+      label: 'notas = [5.5, 4.25]',
+      initialVariables: { notas: [5.5, 4.25] },
+      expectedStdout: '[9.0, 4.25, 10.0]\n[9.0, 4.25]',
+      expectedVariables: [{ name: 'notas', value: [9, 4.25, 10], tolerance: 1e-9 }],
+      explanation: 'A correção vale para a posição 0, seja qual for o tamanho da lista.',
+    },
+    {
+      id: 'prog-lists-002-case-3',
+      visibility: 'internal',
+      label: 'notas = [3.75]',
+      initialVariables: { notas: [3.75] },
+      expectedStdout: '[9.0, 10.0]\n[9.0, 10.0]',
+      expectedVariables: [{ name: 'notas', value: [9, 10], tolerance: 1e-9 }],
+    },
+    {
+      id: 'prog-lists-002-case-4',
+      visibility: 'internal',
+      label: 'notas = [1.5, 2.25, 3.5, 4.75]',
+      initialVariables: { notas: [1.5, 2.25, 3.5, 4.75] },
+      expectedStdout: '[9.0, 2.25, 3.5, 4.75, 10.0]\n[9.0, 2.25]',
+      expectedVariables: [
+        { name: 'notas', value: [9, 2.25, 3.5, 4.75, 10], tolerance: 1e-9 },
+      ],
     },
   ],
   hints: [

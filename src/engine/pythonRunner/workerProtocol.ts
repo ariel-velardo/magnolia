@@ -1,3 +1,5 @@
+import type { VerificationResult, VerificationSpec } from '../testRunner/types'
+import type { InitialVariables } from '../../types'
 import type { ExecutionResult, ExecutionStage } from './types'
 
 /**
@@ -13,9 +15,23 @@ export interface RunRequest {
   readonly requestId: number
   readonly code: string
   readonly packages: readonly string[]
+  /** Estado inicial do namespace; o código em si nunca é reescrito. */
+  readonly initialVariables?: InitialVariables
 }
 
-export type WorkerRequest = RunRequest
+/**
+ * Verificação: mesmo runtime, mesmo Worker, resultado diferente. O Worker roda
+ * os casos e devolve observações brutas; quem julga é o test runner.
+ */
+export interface VerifyRequest {
+  readonly kind: 'verify'
+  readonly requestId: number
+  readonly code: string
+  readonly packages: readonly string[]
+  readonly spec: VerificationSpec
+}
+
+export type WorkerRequest = RunRequest | VerifyRequest
 
 export interface ProgressResponse {
   readonly kind: 'progress'
@@ -29,4 +45,10 @@ export interface ResultResponse {
   readonly result: ExecutionResult
 }
 
-export type WorkerResponse = ProgressResponse | ResultResponse
+export interface VerificationResponse {
+  readonly kind: 'verification'
+  readonly requestId: number
+  readonly result: VerificationResult
+}
+
+export type WorkerResponse = ProgressResponse | ResultResponse | VerificationResponse

@@ -1,3 +1,4 @@
+import type { VerificationResult, VerificationSpec } from '../testRunner/types'
 import type { ExecutionError, ExecutionResult, RunPythonOptions } from './types'
 import type { WorkerRequest, WorkerResponse } from './workerProtocol'
 
@@ -15,6 +16,13 @@ import type { WorkerRequest, WorkerResponse } from './workerProtocol'
  * limite separado abaixo, porque depende da rede e não do código do aluno.
  */
 export const DEFAULT_EXECUTION_TIMEOUT_MS = 10_000
+
+/**
+ * A verificação roda o código do aluno uma vez por caso, então recebe um limite
+ * proporcionalmente maior — ainda curto o bastante para interromper um laço
+ * infinito sem que a página pareça travada.
+ */
+export const DEFAULT_VERIFICATION_TIMEOUT_MS = 20_000
 
 /** Limite generoso para o preparo, que evita um botão preso caso a CDN não responda. */
 const PREPARATION_TIMEOUT_MS = 120_000
@@ -78,23 +86,31 @@ const PREPARATION_ERROR: ExecutionError = {
     'Não foi possível preparar o Python no navegador. Verifique sua conexão e tente novamente.',
 }
 
-export function runPython(
-  code: string,
-  options: RunPythonOptions = {},
-): Promise<ExecutionResult> {
-  if (isRunning) {
-    return Promise.resolve(errorResult(BUSY_ERROR))
-  }
-
-  const { packages = [], timeoutMs = DEFAULT_EXECUTION_TIMEOUT_MS, onStage } = options
+/**
+ * Envia um pedido ao Worker e aplica as regras que valem para qualquer trabalho
+ * Python: uma execução por vez, tempo limite contado só a partir do momento em
+ * que o Python começa a rodar, e Worker derrubado quando o limite estoura.
+ *
+ * `onTimeout` e `onFailure` existem porque executar e verificar têm formatos de
+ * resultado diferentes — a política de tempo limite, não.
+ */
+function dispatch<TResult>(
+  buildRequest: (requestId: number) => WorkerRequest,
+  options: {
+    readonly timeoutMs: number
+    readonly onStage?: RunPythonOptions['onStage']
+    readonly accept: (response: WorkerResponse) => TResult | undefined
+    readonly onFailure: (error: ExecutionError) => TResult
+  },
+): Promise<TResult> {
   const requestId = nextRequestId++
   const activeWorker = getWorker()
   isRunning = true
 
-  return new Promise<ExecutionResult>((resolve) => {
+  return new Promise<TResult>((resolve) => {
     let timer: number | undefined
 
-    const settle = (result: ExecutionResult) => {
+    const settle = (result: TResult) => {
       window.clearTimeout(timer)
       activeWorker.removeEventListener('message', handleMessage)
       activeWorker.removeEventListener('error', handleWorkerFailure)
@@ -106,7 +122,7 @@ export function runPython(
       // Um laço infinito não devolve o controle ao Worker, então a única saída
       // é derrubá-lo. O runtime será recarregado na próxima execução.
       resetPythonRuntime()
-      settle(errorResult(error))
+      settle(options.onFailure(error))
     }
 
     function handleMessage(event: MessageEvent<WorkerResponse>) {
@@ -120,22 +136,26 @@ export function runPython(
         if (response.stage === 'running') {
           window.clearTimeout(timer)
           timer = window.setTimeout(
-            () => abortWithTimeout(timeoutError(timeoutMs)),
-            timeoutMs,
+            () => abortWithTimeout(timeoutError(options.timeoutMs)),
+            options.timeoutMs,
           )
         }
 
-        onStage?.(response.stage)
+        options.onStage?.(response.stage)
         return
       }
 
-      settle(response.result)
+      const accepted = options.accept(response)
+
+      if (accepted !== undefined) {
+        settle(accepted)
+      }
     }
 
     function handleWorkerFailure() {
       resetPythonRuntime()
       settle(
-        errorResult({
+        options.onFailure({
           kind: 'runtime',
           type: 'WorkerError',
           message:
@@ -152,7 +172,64 @@ export function runPython(
       PREPARATION_TIMEOUT_MS,
     )
 
-    const request: WorkerRequest = { kind: 'run', requestId, code, packages }
-    activeWorker.postMessage(request)
+    activeWorker.postMessage(buildRequest(requestId))
   })
+}
+
+export function runPython(
+  code: string,
+  options: RunPythonOptions = {},
+): Promise<ExecutionResult> {
+  if (isRunning) {
+    return Promise.resolve(errorResult(BUSY_ERROR))
+  }
+
+  const {
+    packages = [],
+    timeoutMs = DEFAULT_EXECUTION_TIMEOUT_MS,
+    onStage,
+    initialVariables,
+  } = options
+
+  return dispatch<ExecutionResult>(
+    (requestId) => ({ kind: 'run', requestId, code, packages, initialVariables }),
+    {
+      timeoutMs,
+      onStage,
+      accept: (response) => (response.kind === 'result' ? response.result : undefined),
+      onFailure: (error) => errorResult(error),
+    },
+  )
+}
+
+/**
+ * Roda os casos de teste de um exercício. Devolve observações brutas: quem
+ * decide se cada caso passou é o test runner, em TypeScript puro.
+ */
+export function verifyPython(
+  code: string,
+  spec: VerificationSpec,
+  options: RunPythonOptions = {},
+): Promise<VerificationResult> {
+  if (isRunning) {
+    return Promise.resolve({
+      observation: { outcome: 'execution-error', error: BUSY_ERROR },
+      durationMs: 0,
+    })
+  }
+
+  const { packages = [], timeoutMs = DEFAULT_VERIFICATION_TIMEOUT_MS, onStage } = options
+
+  return dispatch<VerificationResult>(
+    (requestId) => ({ kind: 'verify', requestId, code, packages, spec }),
+    {
+      timeoutMs,
+      onStage,
+      accept: (response) => (response.kind === 'verification' ? response.result : undefined),
+      onFailure: (error) => ({
+        observation: { outcome: 'execution-error', error },
+        durationMs: 0,
+      }),
+    },
+  )
 }

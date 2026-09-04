@@ -90,9 +90,12 @@ somente aulas visualizadas (`viewedLessonIds`) e exercícios iniciados
 previstas para a Fase 4.
 
 Na Fase 2, a página de exercício ganhou editor e execução: Monaco carregado sob
-demanda e Pyodide dentro de um Web Worker. O fluxo vai hoje de Conteúdo até o
-feedback de execução — o que o Python respondeu. Test Runner, Evaluator e
-registro de conclusão continuam vazios, previstos para as Fases 3 e 4.
+demanda e Pyodide dentro de um Web Worker.
+
+Na Fase 3, o ciclo se fechou. O exercício declara casos de teste, o test runner
+os executa, o evaluator interpreta o resultado e a interface apresenta o
+feedback. Falta apenas o registro de conclusão, previsto para a Fase 4:
+verificar diz o que aconteceu nesta tentativa, e não persiste nada.
 
 Ao publicar a aplicação em hospedagem estática, o host deve redirecionar rotas
 profundas para `index.html`. Essa configuração de deploy não faz parte da Fase 1.
@@ -214,19 +217,51 @@ sustenta essa regra está em `docs/PROGRAMMING_CURRICULUM.md`.
 
 Representa um caso utilizado para avaliar a solução.
 
-Pode conter:
+O formato acompanha o modo de execução do exercício, pela mesma união
+discriminada:
 
-- id;
+    ScriptTestCase    label + initialVariables + expectedStdout e/ou expectedVariables
+    FunctionTestCase  args + expected (+ tolerance)
 
-- tipo;
+Um caso de script não tem como declarar `args`, e um caso de função não tem como
+declarar `expectedStdout` no lugar do retorno. Ambos declaram `visibility`.
 
-- entrada;
+`ScriptTestCase` avalia comportamento observável: o que o programa imprimiu e em
+que estado suas variáveis terminaram. Nunca o texto do código — duas soluções
+diferentes que produzem o mesmo resultado são igualmente corretas.
 
-- saída esperada;
+`initialVariables` é a **entrada** de um caso de script, no mesmo papel que
+`args` tem em um caso de função: um mapa de nome para valor declarado
+(`{ temperatura: 8 }`), reutilizando `TestArgument` — int, float, str, bool,
+None, lista e o marcador de ndarray. O test runner cria o namespace já com esses
+nomes ligados aos valores e só então executa o código do aluno.
 
-- visibilidade;
+Nada é concatenado antes do código. Prefixar `temperatura = 8` ao texto do aluno
+deslocaria em uma linha todo `SyntaxError` e todo traceback, e a linha apontada
+na interface deixaria de ser a linha que ele vê no editor. Injetar no namespace
+mantém o texto compilado idêntico ao texto digitado.
 
-- tolerância, quando necessária.
+Sem `initialVariables`, todo caso avaliaria o script com os mesmos valores
+escritos no editor, e responder `classificacao = "agradável"` passaria em um
+exercício de temperatura. Isso é o que impede usar "todos os testes passaram"
+como critério de conclusão, então exercícios de script cuja entrada é um dado
+declaram casos com valores diferentes. Exercícios de `print` puro, em que o
+próprio aluno cria os valores, continuam sem entrada.
+
+`FunctionTestCase` declara os argumentos de forma estruturada. Eles atravessam o
+Worker como dados e viram valores Python na chamada; o código do aluno nunca é
+concatenado com o do harness.
+
+`NdarrayArgument` (`{ kind: 'ndarray', items }`) marca o argumento que precisa
+chegar como `np.array(...)`. O valor esperado continua sendo declarado como
+lista: o comparador aceita um ndarray onde uma lista é esperada, porque o
+conteúdo declara os valores e não a estrutura que os carrega.
+
+### Exemplos derivados
+
+`Exercise` não tem mais um campo `examples` separado. Os exemplos exibidos são a
+leitura dos casos públicos (`getPublicExamples`), o que elimina a possibilidade
+de o enunciado prometer uma coisa e o teste cobrar outra.
 
 ### TestResult
 
@@ -462,6 +497,60 @@ Não deve possuir responsabilidade visual.
 
 O sistema deverá suportar múltiplos testes por exercício.
 
+### Implementação atual
+
+    src/engine/testRunner/testRunner.ts     monta a especificação e julga
+    src/engine/testRunner/comparison.ts     comparadores (puros)
+    src/engine/testRunner/pythonValue.ts    notação de valores (puro)
+    src/engine/testRunner/publicExamples.ts exemplos derivados dos casos públicos
+    src/engine/pythonRunner/verificationHarness.ts  o harness Python
+
+**Divisão de trabalho.** O Worker apenas executa e codifica valores; todo o
+julgamento acontece em TypeScript. Isso permite testar comparação, visibilidade
+e classificação de falha sem carregar o Pyodide — nenhum mock artificial de
+runtime é necessário.
+
+**Namespace limpo.** Cada caso executa o código do aluno em um dicionário de
+globais recém-criado. Nada sobrevive de uma execução livre anterior, de outra
+tentativa ou do caso anterior. O runtime continua carregado: o que é descartado
+é o namespace, não o interpretador.
+
+**Falha global antes dos casos.** O código é compilado uma vez; se não compila,
+nenhum caso roda. Depois é executado uma vez em modo sonda: um erro já no nível
+do módulo é uma falha de execução, e não N casos reprovados. Em modo função, a
+ausência do `entryPoint` também é situação própria.
+
+**Script.** Uma execução por caso: o namespace é criado, recebe as
+`initialVariables` do caso e então executa o código do aluno; `stdout` é
+capturado e as variáveis pedidas são lidas do namespace ao final. Cada caso
+recebe uma cópia profunda dos valores declarados, então um script que faça
+`valores.append(...)` não altera o que o caso seguinte recebe. Um caso interno
+acrescenta duas dimensões: outra entrada e outra forma de observação — verificar
+o estado final pega uma saída escrita à mão que o teste de `stdout` sozinho
+aprovaria.
+
+A sonda também roda com a entrada do primeiro caso. Sem isso, um script que
+dependa de uma variável injetada levantaria `NameError` antes de qualquer caso
+ser avaliado.
+
+**Execução livre.** O botão Executar não roda os casos, mas usa a entrada do
+primeiro deles — montada pelo mesmo harness e passada como `globals` ao Pyodide.
+Sem isso, explorar um exercício de entrada injetada levantaria `NameError` na
+primeira linha. Também aqui o código enviado é executado como foi escrito.
+
+**Função.** O runner localiza o `entryPoint` no namespace e o chama com os
+argumentos declarados. O aluno não escreve chamadas de teste; a linha de
+inspeção `print(funcao(...))` que ele usa enquanto resolve é ignorada, porque em
+modo função só o retorno é comparado.
+
+**Comparadores.** Números são comparados pelo valor, como o Python faz (2 == 2.0);
+`tolerance` cobre ponto flutuante, e há uma margem padrão pequena para que
+0.1 + 0.2 não reprove uma solução correta. Booleano não casa com número, mesmo
+que o Python os considere iguais — confundir os dois é justamente o erro que
+interessa apontar. `stdout` ignora quebras de linha finais e é sensível a
+espaços e acentos. Um tipo que o Magnolia ainda não sabe comparar é reportado
+como tal, em vez de reprovar silenciosamente.
+
 ---
 
 ## 10. Testes públicos e internos
@@ -487,6 +576,15 @@ e não:
 **inacessível tecnicamente ao usuário**
 
 Caso no futuro seja necessário proteger realmente os testes, a avaliação deverá migrar para backend.
+
+### Implementação atual
+
+`visibility: 'public' | 'internal'` em cada caso.
+
+Um caso público entra nos exemplos do enunciado e, quando falha, mostra entrada,
+esperado e recebido. Um caso interno nunca é exibido: ele aparece apenas na
+contagem ("1 teste interno ainda falhou") e na orientação genérica sobre casos
+de limite.
 
 ---
 
@@ -517,6 +615,21 @@ Responsabilidade:
 Não deve entregar imediatamente a solução correta.
 
 O evaluator deverá produzir dados que a interface possa apresentar de diferentes formas.
+
+### Implementação atual
+
+`evaluate(TestRunResult, Exercise) -> Evaluation`, em `src/engine/evaluator/`.
+Não executa Python e não renderiza nada.
+
+Produz `status` (`all-passed`, `some-failed`, `execution-error`,
+`missing-entry-point`), a frase principal, um resumo, os casos **públicos** que
+falharam com esperado e recebido, a **contagem** de casos internos que falharam
+e uma orientação derivada do tipo de divergência observada.
+
+A orientação diz onde olhar, nunca o que escrever: `stdout` divergente pede
+conferir espaços e pontuação; variável divergente aponta o cálculo em vez da
+exibição; falha só nos internos pede revisar casos de limite. Nenhuma delas
+revela conteúdo de caso interno nem sugere a solução.
 
 ---
 

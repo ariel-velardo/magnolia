@@ -12,18 +12,42 @@ const exercise = {
   difficulty: 'Fundamentos',
   executionMode: 'script',
   instructions: [
-    'Use as variáveis nome e idade que já estão criadas.',
+    'As variáveis nome e idade já vêm definidas: a verificação roda o mesmo programa com valores diferentes.',
     'Monte uma frase no formato: Ana tem 28 anos.',
     'Exiba a frase com print, usando uma f-string para inserir as duas variáveis.',
     'O ponto final também faz parte da frase.',
   ],
-  starterCode:
-    'nome = "Ana"\nidade = 28\n\n# Exiba a frase de apresentação\n',
-  examples: [
+  starterCode: '# Exiba a frase de apresentação\n',
+  tests: [
     {
-      output: 'Ana tem 28 anos.',
-      explanation:
-        'A f-string substitui {nome} e {idade} pelos valores das variáveis.',
+      id: 'prog-variables-003-case-1',
+      visibility: 'public',
+      label: "nome = 'Ana', idade = 28",
+      initialVariables: { nome: 'Ana', idade: 28 },
+      expectedStdout: 'Ana tem 28 anos.',
+      explanation: 'O ponto final faz parte da frase.',
+    },
+    {
+      id: 'prog-variables-003-case-2',
+      visibility: 'public',
+      label: "nome = 'Caio', idade = 19",
+      initialVariables: { nome: 'Caio', idade: 19 },
+      expectedStdout: 'Caio tem 19 anos.',
+      explanation: 'A frase é montada a partir das variáveis, e não escrita à mão.',
+    },
+    {
+      id: 'prog-variables-003-case-3',
+      visibility: 'internal',
+      label: "nome = 'Lourenço', idade = 102",
+      initialVariables: { nome: 'Lourenço', idade: 102 },
+      expectedStdout: 'Lourenço tem 102 anos.',
+    },
+    {
+      id: 'prog-variables-003-case-4',
+      visibility: 'internal',
+      label: "nome = 'Bea', idade = 7",
+      initialVariables: { nome: 'Bea', idade: 7 },
+      expectedStdout: 'Bea tem 7 anos.',
     },
   ],
   hints: [

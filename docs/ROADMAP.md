@@ -131,6 +131,8 @@ o usuário consegue escrever Python no editor e executar o código no navegador.
 
 ## Fase 3 — Sistema de avaliação
 
+Status: concluída.
+
 Objetivo:
 
 transformar execução em prática estruturada.
@@ -158,6 +160,17 @@ Implementar:
 - resumo de testes;
 
 - feedback de erro.
+
+Entrega realizada: modelo declarativo de `TestCase` como união discriminada
+(`ScriptTestCase` e `FunctionTestCase`); test runner em `src/engine/testRunner/`
+com namespace Python limpo por caso; evaluator em `src/engine/evaluator/`;
+comparadores para texto, número com tolerância, booleano, None, listas e
+ndarray; testes públicos e internos; ação **Verificar solução** separada de
+**Executar**; e casos de teste nos 23 exercícios existentes.
+
+Executar continua sendo exploração livre. Passar em todos os testes é o
+resultado da tentativa atual e **não** é persistido como conclusão — isso é
+assunto da Fase 4.
 
 Critério de conclusão:
 

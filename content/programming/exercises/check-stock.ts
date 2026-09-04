@@ -12,17 +12,43 @@ const exercise = {
   difficulty: 'Fundamentos',
   executionMode: 'script',
   instructions: [
+    'As variáveis estoque e estoque_minimo já vêm definidas: a verificação roda o mesmo programa com valores diferentes.',
     'Compare estoque com estoque_minimo.',
     'Quando o estoque estiver abaixo do mínimo, exiba Repor estoque.',
     'Quando não estiver, exiba Estoque suficiente.',
     'Depois da decisão, exiba sempre a linha Verificação concluída.',
   ],
-  starterCode: 'estoque = 4\nestoque_minimo = 10\n\n# Decida qual mensagem exibir\n',
-  examples: [
+  starterCode: '# Decida qual mensagem exibir\n',
+  tests: [
     {
-      output: 'Repor estoque\nVerificação concluída',
-      explanation:
-        'A última linha aparece nos dois casos porque fica fora do bloco indentado.',
+      id: 'prog-conditionals-001-case-1',
+      visibility: 'public',
+      label: 'estoque = 4, estoque_minimo = 10',
+      initialVariables: { estoque: 4, estoque_minimo: 10 },
+      expectedStdout: 'Repor estoque\nVerificação concluída',
+      explanation: 'A última linha aparece nos dois casos, porque fica fora do bloco.',
+    },
+    {
+      id: 'prog-conditionals-001-case-2',
+      visibility: 'public',
+      label: 'estoque = 12, estoque_minimo = 10',
+      initialVariables: { estoque: 12, estoque_minimo: 10 },
+      expectedStdout: 'Estoque suficiente\nVerificação concluída',
+      explanation: 'Com estoque acima do mínimo, muda só a primeira linha.',
+    },
+    {
+      id: 'prog-conditionals-001-case-3',
+      visibility: 'internal',
+      label: 'estoque = 10, estoque_minimo = 10',
+      initialVariables: { estoque: 10, estoque_minimo: 10 },
+      expectedStdout: 'Estoque suficiente\nVerificação concluída',
+    },
+    {
+      id: 'prog-conditionals-001-case-4',
+      visibility: 'internal',
+      label: 'estoque = 0, estoque_minimo = 3',
+      initialVariables: { estoque: 0, estoque_minimo: 3 },
+      expectedStdout: 'Repor estoque\nVerificação concluída',
     },
   ],
   hints: [

@@ -17,10 +17,13 @@ const exercise = {
     'A ordem das linhas no código é a ordem em que elas aparecem na saída.',
   ],
   starterCode: '# Escreva os três prints, um por linha\n',
-  examples: [
+  tests: [
     {
-      output: 'Preparando\nExecutando\nPronto',
-      explanation: 'Cada print ocupa uma linha da saída, na ordem do código.',
+      id: 'prog-first-steps-002-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout: 'Preparando\nExecutando\nPronto',
+      explanation: 'Três linhas, na mesma ordem em que os prints aparecem no código.',
     },
   ],
   hints: [

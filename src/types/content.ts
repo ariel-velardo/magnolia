@@ -89,15 +89,99 @@ export interface Lesson {
   readonly relatedExerciseIds: readonly string[]
 }
 
-export interface ExerciseExample {
-  /**
-   * A chamada que produz o resultado, em exercícios de função. Exercícios de
-   * script não têm entrada: o exemplo é só a saída esperada do programa.
-   */
-  readonly input?: string
-  readonly output: string
+/**
+ * Valores que um caso de teste declara. Precisam atravessar o postMessage e
+ * virar valor Python, então ficam restritos ao que o JSON representa — o que
+ * cobre tudo o que o currículo atual exercita.
+ */
+export type TestValue = string | number | boolean | null | readonly TestValue[]
+
+/**
+ * Argumento que precisa chegar ao Python como `np.array(...)`, e não como
+ * lista. Existe porque alguns exercícios de NumPy operam sobre arrays, e uma
+ * lista comum se comportaria de outro jeito na mesma expressão.
+ *
+ * Vale para argumentos de função e para o estado inicial de um script. O valor
+ * esperado continua sendo declarado como lista — o comparador aceita um ndarray
+ * onde uma lista é esperada, já que o conteúdo declara os valores e não a
+ * estrutura que os carrega.
+ */
+export interface NdarrayArgument {
+  readonly kind: 'ndarray'
+  readonly items: readonly TestValue[]
+}
+
+export type TestArgument = TestValue | NdarrayArgument
+
+/**
+ * Estado inicial de um caso de script: nomes já ligados a valores no momento em
+ * que o código do aluno começa a rodar.
+ *
+ * É a entrada do exercício, no mesmo papel que `args` tem em um caso de função.
+ * Sem ela, todo caso avaliaria o script com os mesmos valores literais escritos
+ * no editor, e responder `classificacao = "agradável"` passaria — o exercício
+ * mediria a leitura do enunciado, e não a solução.
+ *
+ * Os valores são dados declarados, nunca trechos de Python: reutilizam
+ * `TestArgument`, então cobrem int, float, str, bool, None, listas e o marcador
+ * de ndarray. O test runner os injeta diretamente no namespace, **sem**
+ * concatenar nenhuma linha antes do código do aluno — o texto que ele escreveu
+ * é o texto compilado, e a linha de um SyntaxError ou de um traceback continua
+ * sendo a linha que ele vê no editor.
+ */
+export type InitialVariables = Readonly<Record<string, TestArgument>>
+
+/**
+ * Teste público mostra entrada, esperado e recebido; teste interno cobre casos
+ * de limite e revela apenas o necessário.
+ *
+ * Como tudo roda no navegador, "interno" significa não exibido pela interface,
+ * e não inacessível — a distinção é pedagógica, não de segurança.
+ */
+export type TestVisibility = 'public' | 'internal'
+
+interface TestCaseBase {
+  readonly id: string
+  readonly visibility: TestVisibility
+  /** Comentário curto exibido junto ao caso público. */
   readonly explanation?: string
 }
+
+export interface ExpectedVariable {
+  /** Nome da variável no final da execução do script. */
+  readonly name: string
+  readonly value: TestValue
+  /** Margem aceitável para valores de ponto flutuante. */
+  readonly tolerance?: number
+}
+
+/**
+ * Avalia um script pelo comportamento observável: o que ele imprimiu e em que
+ * estado suas variáveis terminaram. Nunca pelo texto do código — duas soluções
+ * diferentes que produzem o mesmo resultado são igualmente corretas.
+ */
+export interface ScriptTestCase extends TestCaseBase {
+  /** Rótulo curto; em caso interno é a única informação exibida. */
+  readonly label: string
+  /**
+   * Entrada do caso, injetada no namespace antes de o script rodar. Ausente nos
+   * exercícios em que o próprio aluno cria os valores — um exercício de `print`
+   * puro não ganha nada em variar a entrada.
+   */
+  readonly initialVariables?: InitialVariables
+  readonly expectedStdout?: string
+  readonly expectedVariables?: readonly ExpectedVariable[]
+}
+
+/** Chama o entryPoint com os argumentos declarados e compara o retorno. */
+export interface FunctionTestCase extends TestCaseBase {
+  readonly args: readonly TestArgument[]
+  readonly expected: TestValue
+  /** Margem aceitável para retornos de ponto flutuante. */
+  readonly tolerance?: number
+}
+
+export type TestCase = ScriptTestCase | FunctionTestCase
 
 export interface Hint {
   readonly id: string
@@ -116,7 +200,6 @@ interface ExerciseBase {
   readonly difficulty: Difficulty
   readonly instructions: readonly string[]
   readonly starterCode: string
-  readonly examples: readonly ExerciseExample[]
   readonly hints: readonly Hint[]
   readonly skill: string
   readonly packages: readonly string[]
@@ -124,22 +207,26 @@ interface ExerciseBase {
 
 export interface ScriptExercise extends ExerciseBase {
   readonly executionMode: 'script'
+  readonly tests: readonly ScriptTestCase[]
 }
 
 export interface FunctionExercise extends ExerciseBase {
   readonly executionMode: 'function'
   /**
-   * Nome da função que o aluno deve implementar. O test runner da Fase 3 vai
-   * chamá-la; até lá, serve para a interface orientar o aluno e para o catálogo
-   * conferir que ela aparece no starter code.
+   * Nome da função que o aluno deve implementar. O test runner a localiza no
+   * namespace depois de executar o código e a chama diretamente — o aluno não
+   * precisa escrever nenhuma chamada de teste.
    */
   readonly entryPoint: string
+  readonly tests: readonly FunctionTestCase[]
 }
 
 /**
- * União discriminada de propósito: `entryPoint` existe apenas onde faz sentido.
- * Um exercício de script não tem como declará-lo por engano, e o avaliador da
- * Fase 3 é obrigado pelo compilador a tratar os dois casos.
+ * União discriminada de propósito: `entryPoint` e o formato dos testes existem
+ * apenas onde fazem sentido. Um exercício de script não tem como declarar
+ * `args` nem `entryPoint`, e um exercício de função não tem como declarar
+ * `expectedStdout` como se fosse retorno. O avaliador é obrigado pelo
+ * compilador a tratar os dois casos.
  */
 export type Exercise = ScriptExercise | FunctionExercise
 

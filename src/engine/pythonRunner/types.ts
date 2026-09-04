@@ -1,3 +1,5 @@
+import type { InitialVariables } from '../../types'
+
 /**
  * Tipos do domínio de execução de Python.
  *
@@ -36,6 +38,12 @@ export interface ExecutionResult {
 export interface RunPythonOptions {
   /** Pacotes Python exigidos pelo exercício, por exemplo ['numpy']. */
   readonly packages?: readonly string[]
+  /**
+   * Estado inicial do namespace, para a execução livre partir dos mesmos
+   * valores que o primeiro caso de teste. Injetado no namespace: o código
+   * enviado é executado exatamente como foi escrito.
+   */
+  readonly initialVariables?: InitialVariables
   /** Tempo limite da execução em si — não cobre o download do runtime. */
   readonly timeoutMs?: number
   /** Notifica a interface a cada etapa do fluxo. */

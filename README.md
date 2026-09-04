@@ -62,19 +62,25 @@ Conteúdos planejados incluem:
 Cada exercício já oferece:
 
 - explicação do problema;
-- exemplos;
+- exemplos derivados dos próprios casos de teste;
 - código inicial;
 - editor de código com destaque de sintaxe;
 - execução Python no navegador;
 - saída do programa;
 - mensagens de erro do Python;
+- verificação automática da solução;
+- testes públicos e internos;
+- feedback com esperado e recebido;
 - dicas progressivas.
 
-Ainda virão:
+Duas ações diferentes, de propósito:
 
-- testes automáticos;
-- avaliação da solução;
-- feedback pedagógico;
+- **Executar** roda seu código e mostra a saída. Serve para explorar e depurar.
+  Executar sem erro não significa que a solução está correta.
+- **Verificar solução** roda os casos de teste e avalia a resposta.
+
+Ainda virá:
+
 - registro de conclusão no progresso.
 
 O objetivo não é apenas informar se a resposta está certa ou errada, mas ajudar o aluno a entender o erro e tentar novamente.
@@ -158,7 +164,7 @@ reaproveitado durante a sessão.
 
 ## Status
 
-As Fases 1 e 2 estão concluídas.
+As Fases 1, 2 e 3 estão concluídas.
 
 O Magnolia oferece um recorte declarativo e navegável com Dashboard, duas
 trilhas, nove aulas e vinte e três exercícios; e a página de exercício já traz
@@ -169,8 +175,12 @@ A trilha de Programação começa do zero — do primeiro `print` até funções
 nenhum exercício exige um conceito que ainda não foi ensinado. A progressão está
 documentada em `docs/PROGRAMMING_CURRICULUM.md`.
 
-A prioridade atual é a Fase 3: modelo de `TestCase`, test runner e evaluator.
-Executar código ainda **não** avalia a solução nem conclui o exercício.
+O ciclo completo funciona: o aluno escreve, executa, verifica, recebe o número
+de testes aprovados e o feedback do que falhou — sem receber a solução.
+
+A prioridade atual é a Fase 4: persistir o progresso, incluindo exercícios
+concluídos. Hoje o resultado vale para a tentativa atual e não sobrevive a um
+refresh.
 
 ## Evolução futura
 

@@ -20,12 +20,25 @@ const exercise = {
   ],
   starterCode:
     '# Crie as quatro variáveis\n\n\n# Exiba o tipo de cada uma\n',
-  examples: [
+  tests: [
     {
-      output:
+      id: 'prog-variables-002-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout:
         "<class 'str'>\n<class 'int'>\n<class 'float'>\n<class 'bool'>",
-      explanation:
-        'Cada linha mostra como o Python classificou o valor guardado na variável.',
+      explanation: 'Uma linha por variável, na ordem em que foram criadas.',
+    },
+    {
+      id: 'prog-variables-002-case-2',
+      visibility: 'internal',
+      label: 'As quatro variáveis existem com os valores certos',
+      expectedVariables: [
+        { name: 'titulo', value: 'Relatório' },
+        { name: 'paginas', value: 12 },
+        { name: 'nota', value: 8.5 },
+        { name: 'revisado', value: true },
+      ],
     },
   ],
   hints: [

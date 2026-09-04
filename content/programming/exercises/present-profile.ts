@@ -20,16 +20,31 @@ const exercise = {
   ],
   starterCode:
     'def apresentar_perfil(nome, idade):\n    # Monte a frase e devolva com return\n    pass\n\n\n# Linha de inspeção: fora da função, só para conferir o retorno\nprint(apresentar_perfil("Ana", 28))\n',
-  examples: [
+  tests: [
     {
-      input: 'apresentar_perfil("Ana", 28)',
-      output: "'Ana tem 28 anos.'",
-      explanation:
-        'A função devolve o texto. A linha de inspeção é que o exibe na tela.',
+      id: 'prog-functions-001-case-1',
+      visibility: 'public',
+      args: ['Ana', 28],
+      expected: 'Ana tem 28 anos.',
+      explanation: 'A função devolve o texto; quem chamou decide o que fazer com ele.',
     },
     {
-      input: 'apresentar_perfil("Caio", 19)',
-      output: "'Caio tem 19 anos.'",
+      id: 'prog-functions-001-case-2',
+      visibility: 'public',
+      args: ['Caio', 19],
+      expected: 'Caio tem 19 anos.',
+    },
+    {
+      id: 'prog-functions-001-case-3',
+      visibility: 'internal',
+      args: ['Lourenço', 102],
+      expected: 'Lourenço tem 102 anos.',
+    },
+    {
+      id: 'prog-functions-001-case-4',
+      visibility: 'internal',
+      args: ['Bea', 7],
+      expected: 'Bea tem 7 anos.',
     },
   ],
   hints: [

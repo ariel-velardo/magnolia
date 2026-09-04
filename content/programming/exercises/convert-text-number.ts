@@ -12,18 +12,46 @@ const exercise = {
   difficulty: 'Fácil',
   executionMode: 'script',
   instructions: [
+    'As variáveis quantidade_texto e adicionais já vêm definidas: a verificação roda o mesmo programa com valores diferentes.',
     'A variável quantidade_texto guarda um número escrito como texto.',
     'Converta esse valor para inteiro e guarde o resultado em uma variável chamada quantidade.',
     'Exiba a frase no formato: Você tem 15 itens.',
     'Se somar sem converter, o Python levanta um TypeError — vale executar antes de corrigir, para ver o erro.',
   ],
-  starterCode:
-    'quantidade_texto = "12"\nadicionais = 3\n\n# Converta e calcule o total\n',
-  examples: [
+  starterCode: '# Converta e calcule o total\n',
+  tests: [
     {
-      output: 'Você tem 15 itens.',
-      explanation:
-        'Depois da conversão, 12 e 3 são somados como números e o resultado entra na frase.',
+      id: 'prog-variables-004-case-1',
+      visibility: 'public',
+      label: "quantidade_texto = '12', adicionais = 3",
+      initialVariables: { quantidade_texto: '12', adicionais: 3 },
+      expectedStdout: 'Você tem 15 itens.',
+      expectedVariables: [{ name: 'quantidade', value: 12 }],
+    },
+    {
+      id: 'prog-variables-004-case-2',
+      visibility: 'public',
+      label: "quantidade_texto = '40', adicionais = 2",
+      initialVariables: { quantidade_texto: '40', adicionais: 2 },
+      expectedStdout: 'Você tem 42 itens.',
+      expectedVariables: [{ name: 'quantidade', value: 40 }],
+      explanation: 'A mesma solução precisa valer para qualquer número que venha como texto.',
+    },
+    {
+      id: 'prog-variables-004-case-3',
+      visibility: 'internal',
+      label: "quantidade_texto = '0', adicionais = 0",
+      initialVariables: { quantidade_texto: '0', adicionais: 0 },
+      expectedStdout: 'Você tem 0 itens.',
+      expectedVariables: [{ name: 'quantidade', value: 0 }],
+    },
+    {
+      id: 'prog-variables-004-case-4',
+      visibility: 'internal',
+      label: "quantidade_texto = '7', adicionais = 100",
+      initialVariables: { quantidade_texto: '7', adicionais: 100 },
+      expectedStdout: 'Você tem 107 itens.',
+      expectedVariables: [{ name: 'quantidade', value: 7 }],
     },
   ],
   hints: [

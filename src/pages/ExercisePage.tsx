@@ -3,6 +3,7 @@ import { AppLink } from '../components/common/AppLink'
 import { Breadcrumbs } from '../components/common/Breadcrumbs'
 import { Icon } from '../components/common/Icon'
 import { ExerciseWorkspace } from '../components/exercise/ExerciseWorkspace'
+import { getPublicExamples } from '../engine/testRunner'
 import {
   getNextLearningItem,
   getTopicById,
@@ -20,6 +21,9 @@ export function ExercisePage({ exercise }: ExercisePageProps) {
   const track = getTrackById(exercise.trackId)
   const topic = getTopicById(exercise.topicId)
   const nextItem = getNextLearningItem(exercise.id)
+  // Os exemplos são a leitura dos casos públicos: o aluno vê exatamente o que
+  // a verificação vai cobrar, sem uma segunda fonte de verdade para divergir.
+  const examples = getPublicExamples(exercise)
 
   useEffect(() => {
     markExerciseStarted(exercise.id)
@@ -93,22 +97,30 @@ export function ExercisePage({ exercise }: ExercisePageProps) {
               <p className="section-number">Exemplos</p>
               <h2 id="examples-title">Confira o contrato esperado</h2>
               <div className="example-grid">
-                {exercise.examples.map((example, index) => (
-                  <article className="exercise-example" key={index}>
+                {examples.map((example, index) => (
+                  <article className="exercise-example" key={example.id}>
                     <p className="exercise-example__number">Exemplo {index + 1}</p>
                     <dl>
-                      {/* Exercícios de script não têm entrada: só a saída esperada. */}
-                      {example.input !== undefined && (
+                      {/* Em função, a entrada é a chamada; em script, o estado
+                          inicial do caso — que só existe onde o exercício varia
+                          a entrada. */}
+                      {example.call !== undefined && (
                         <div>
                           <dt>Chamada</dt>
-                          <dd><code>{example.input}</code></dd>
+                          <dd><code>{example.call}</code></dd>
+                        </div>
+                      )}
+                      {example.given !== undefined && (
+                        <div>
+                          <dt>Valores iniciais</dt>
+                          <dd><code>{example.given}</code></dd>
                         </div>
                       )}
                       <div>
                         <dt>
-                          {example.input === undefined ? 'Saída esperada' : 'Retorno esperado'}
+                          {example.call === undefined ? 'Saída esperada' : 'Retorno esperado'}
                         </dt>
-                        <dd><code>{example.output}</code></dd>
+                        <dd><code>{example.expected}</code></dd>
                       </div>
                     </dl>
                     {example.explanation && <p>{example.explanation}</p>}

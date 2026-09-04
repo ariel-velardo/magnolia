@@ -337,8 +337,12 @@ Em exercício de **função**, o exemplo tem chamada e retorno:
 
     37.0
 
-Em exercício de **script** não existe entrada: o exemplo é a saída esperada do
-programa, e o campo `input` fica ausente.
+Em exercício de **script** o exemplo é a saída esperada do programa. Quando o
+caso declara entrada, ela aparece antes:
+
+    Valores iniciais:
+
+    preco_unitario = 18.5, quantidade = 2
 
     Saída esperada:
 
@@ -356,9 +360,25 @@ Testes públicos ajudam o aluno a compreender o comportamento esperado.
 
 Devem testar casos representativos e simples.
 
-Exemplo conceitual:
+Eles são a **fonte dos exemplos** exibidos no enunciado: a página deriva os
+exemplos dos casos públicos, então não existe um campo separado para isso e não
+há como o exemplo dizer uma coisa e o teste cobrar outra.
 
-    soma(\[1, 2, 3]) == 6
+Todo exercício precisa de pelo menos um caso público.
+
+Em exercício de função:
+
+    { id: 'ex-case-1', visibility: 'public', args: [18.5, 2], expected: 37, tolerance: 1e-9 }
+
+Em exercício de script:
+
+    { id: 'ex-case-1', visibility: 'public',
+      label: 'preco_unitario = 18.5, quantidade = 2',
+      initialVariables: { preco_unitario: 18.5, quantidade: 2 },
+      expectedStdout: 'Total: 37.0' }
+
+Declare `tolerance` quando o valor for float. Além de cobrir o erro de
+representação, é o sinal que faz a interface escrever `37.0` em vez de `37`.
 
 ---
 
@@ -378,6 +398,80 @@ Não utilizar testes capciosos sem valor pedagógico.
 
 Um teste interno deve verificar se o aluno realmente resolveu o problema, não tentar enganá-lo.
 
+O aluno vê apenas a contagem — "1 teste interno ainda falhou" — e uma orientação
+genérica sobre casos de limite. Entrada, esperado e recebido não são exibidos.
+
+### O que um caso interno acrescenta em cada modo
+
+Em **exercício de função**, o caso interno usa argumentos diferentes dos
+exemplos. É o que separa quem resolveu o problema de quem acertou os dois casos
+mostrados.
+
+Em **exercício de script** o caso interno acrescenta duas coisas: outra entrada
+em `initialVariables` e outra dimensão de observação — verificar o estado final
+com `expectedVariables` pega uma saída escrita à mão que o teste de `stdout`
+sozinho aprovaria:
+
+    { id: 'ex-case-2', visibility: 'internal',
+      label: 'preco_unitario = 8.75, quantidade = 0',
+      initialVariables: { preco_unitario: 8.75, quantidade: 0 },
+      expectedStdout: 'Total: 0.0',
+      expectedVariables: [{ name: 'total', value: 0, tolerance: 1e-9 }] }
+
+Quando um caso interno depende de uma variável, o enunciado precisa nomeá-la.
+Cobrar um nome que o exercício não pediu é injusto.
+
+Avalie sempre comportamento e estado, **nunca o texto do código**: duas soluções
+diferentes que produzem o mesmo resultado são igualmente corretas.
+
+### Entrada de um exercício de script
+
+Um caso de script pode declarar `initialVariables`: nomes já ligados a valores
+no momento em que o código do aluno começa a rodar. É a entrada do exercício, no
+mesmo papel que `args` tem em um caso de função.
+
+    initialVariables: { temperatura: 8 }
+
+O test runner cria um namespace novo, coloca esses nomes nele e só então executa
+o código. **Nada é acrescentado ao texto do aluno**: a linha apontada por um
+`SyntaxError` ou por um traceback continua sendo a linha que ele vê no editor.
+
+Declare **dados**, nunca código de preparação. Os valores reutilizam os mesmos
+tipos dos argumentos de função: int, float, str, bool, `null`, listas e o
+marcador `{ kind: 'ndarray', items: [...] }`. Não existe forma de passar um
+trecho de Python como setup, e isso é deliberado.
+
+**Quando usar.** Sempre que a solução dependa de um dado — condicionais,
+operadores, listas, loops, conversões, contas. Um caso com entrada fixa aprova
+quem escreveu a resposta à mão: em um exercício de temperatura, `classificacao =
+"agradável"` passaria. Varie a entrada entre os casos para que a mesma solução
+seja cobrada em situações diferentes:
+
+    temperatura = 8   →  frio
+    temperatura = 21  →  agradável
+    temperatura = 32  →  quente
+
+Nada disso exige função: o aluno continua escrevendo um script de cima para
+baixo.
+
+**Quando não usar.** Exercícios de `print` puro e exercícios em que o próprio
+aluno cria as variáveis. Ali não há entrada, e injetar uma não mediria nada a
+mais.
+
+**Regras que o catálogo cobra.**
+
+- Ou todos os casos do exercício declaram os mesmos nomes, ou nenhum declara:
+  um caso sem a variável que os outros recebem levantaria `NameError`.
+- O starter code **não pode atribuir** um nome injetado. A atribuição rodaria
+  depois da injeção e sobrescreveria a entrada de todos os casos. Em vez de
+  `temperatura = 21` no editor, o enunciado diz que a variável já existe.
+- O enunciado precisa nomear as variáveis de entrada, como já precisa nomear as
+  variáveis cobradas em `expectedVariables`.
+
+**Cuidado com float inteiro.** Os valores atravessam JSON, e `7.0` chega ao
+Python como `7` (int). Quando o tipo aparece na saída — `Total: 0.0` — declare
+valores com casa decimal significativa (`8.75`, `12.5`, `6.25`).
+
 ---
 
 ## 13. Comparação de resultados
@@ -389,6 +483,34 @@ Dados numéricos com ponto flutuante podem exigir tolerância.
 Para NumPy e Pandas, utilizar comparadores adequados ao tipo de objeto.
 
 Evitar validar objetos complexos através de conversão arbitrária para string.
+
+### O que os comparadores atuais fazem
+
+- **Número**: comparado pelo valor, como o Python faz — `2 == 2.0`. Com
+  `tolerance`, a margem é a declarada; sem ela, há uma margem mínima para
+  absorver o erro de representação de float.
+- **Booleano**: não casa com número. Em Python `True == 1`, mas confundir os
+  dois é justamente o erro que interessa apontar.
+- **Texto**: igualdade exata.
+- **None**: só casa com `null` declarado. Uma função sem `return` devolve `None`
+  e reprova — é o erro mais comum do tópico de Funções.
+- **Lista**: item a item, com o mesmo tamanho. Um `ndarray` ou uma `tuple` são
+  aceitos onde uma lista é esperada.
+- **Saída do programa**: quebras de linha finais são ignoradas; espaços,
+  acentos e pontuação no meio são significativos.
+
+Um tipo que o Magnolia ainda não sabe comparar — um `set`, por exemplo — é
+reportado como tal em vez de reprovar silenciosamente.
+
+### Argumentos NumPy
+
+Quando a função precisa receber um array, e não uma lista, declare o argumento
+assim:
+
+    args: [{ kind: 'ndarray', items: [0, 10, 20] }]
+
+O valor esperado continua sendo uma lista: o comparador aceita o ndarray de
+volta, porque o conteúdo declara os valores e não a estrutura que os carrega.
 
 ---
 

@@ -18,11 +18,13 @@ const exercise = {
   ],
   starterCode:
     'print("Relatório de vendas")\nprint("rascunho")\nprint("Total: 240")\n',
-  examples: [
+  tests: [
     {
-      output: 'Relatório de vendas\nTotal: 240',
-      explanation:
-        'A linha do rascunho some da saída porque virou comentário; os comentários que você acrescentou também não aparecem.',
+      id: 'prog-first-steps-003-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout: 'Relatório de vendas\nTotal: 240',
+      explanation: 'A linha do rascunho não pode aparecer, e os comentários também não.',
     },
   ],
   hints: [

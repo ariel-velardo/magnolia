@@ -12,18 +12,47 @@ const exercise = {
   difficulty: 'Fácil+',
   executionMode: 'script',
   instructions: [
+    'As variáveis nota e presenca já vêm definidas: a verificação roda o mesmo programa com valores diferentes.',
     'O aluno é aprovado quando tem nota maior ou igual a 7 E presença maior ou igual a 75.',
     'Guarde esse resultado em uma variável chamada aprovado.',
     'Exiba duas linhas: primeiro o valor de aprovado, depois o valor de aprovado invertido com not.',
     'Não use if nesta prática: apenas combine as comparações em uma expressão.',
   ],
-  starterCode:
-    'nota = 8.5\npresenca = 62\n\n# Combine os dois critérios\n',
-  examples: [
+  starterCode: '# Combine os dois critérios\n',
+  tests: [
     {
-      output: 'False\nTrue',
-      explanation:
-        'A nota atende ao critério, mas a presença não. Como and exige as duas, o resultado é False.',
+      id: 'prog-operators-004-case-1',
+      visibility: 'public',
+      label: 'nota = 8.5, presenca = 62',
+      initialVariables: { nota: 8.5, presenca: 62 },
+      expectedStdout: 'False\nTrue',
+      expectedVariables: [{ name: 'aprovado', value: false }],
+      explanation: 'A nota atende ao critério, a presença não — e and exige as duas.',
+    },
+    {
+      id: 'prog-operators-004-case-2',
+      visibility: 'public',
+      label: 'nota = 8.5, presenca = 90',
+      initialVariables: { nota: 8.5, presenca: 90 },
+      expectedStdout: 'True\nFalse',
+      expectedVariables: [{ name: 'aprovado', value: true }],
+      explanation: 'Com os dois critérios atendidos, aprovado vira True.',
+    },
+    {
+      id: 'prog-operators-004-case-3',
+      visibility: 'internal',
+      label: 'nota = 6.5, presenca = 100',
+      initialVariables: { nota: 6.5, presenca: 100 },
+      expectedStdout: 'False\nTrue',
+      expectedVariables: [{ name: 'aprovado', value: false }],
+    },
+    {
+      id: 'prog-operators-004-case-4',
+      visibility: 'internal',
+      label: 'nota = 7, presenca = 75',
+      initialVariables: { nota: 7, presenca: 75 },
+      expectedStdout: 'True\nFalse',
+      expectedVariables: [{ name: 'aprovado', value: true }],
     },
   ],
   hints: [

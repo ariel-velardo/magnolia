@@ -17,10 +17,18 @@ const exercise = {
     'Passe a variável para o print sem aspas: com aspas, você imprimiria a palavra cidade.',
   ],
   starterCode: '# Crie a variável cidade e imprima o valor dela\n',
-  examples: [
+  tests: [
     {
-      output: 'Porto Alegre',
-      explanation: 'O print recebe a variável e exibe o valor guardado nela.',
+      id: 'prog-variables-001-case-1',
+      visibility: 'public',
+      label: 'Saída do programa',
+      expectedStdout: 'Porto Alegre',
+    },
+    {
+      id: 'prog-variables-001-case-2',
+      visibility: 'internal',
+      label: 'A variável guarda o valor',
+      expectedVariables: [{ name: 'cidade', value: 'Porto Alegre' }],
     },
   ],
   hints: [

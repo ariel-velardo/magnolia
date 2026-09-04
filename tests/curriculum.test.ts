@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { exercises, getTopicById, lessons, topics, tracks } from '../src/content/catalog'
-import type { Topic } from '../src/types'
+import { getPublicExamples } from '../src/engine/testRunner'
+import type { ScriptExercise, Topic } from '../src/types'
 
 /**
  * Regras curriculares da trilha, e não apenas de forma dos dados.
@@ -115,13 +116,11 @@ describe('modo de execução dos exercícios', () => {
 
   it('só usa exemplo com chamada em exercício de função', () => {
     for (const exercise of exercises) {
-      if (exercise.executionMode === 'script') {
-        for (const example of exercise.examples) {
-          expect(
-            example.input,
-            `"${exercise.id}" é script e não deveria ter chamada de entrada`,
-          ).toBeUndefined()
-        }
+      for (const example of getPublicExamples(exercise)) {
+        expect(
+          example.call === undefined,
+          `"${exercise.id}" (${exercise.executionMode}) tem exemplo com chamada?`,
+        ).toBe(exercise.executionMode === 'script')
       }
     }
   })
@@ -180,6 +179,106 @@ describe('densidade pedagógica', () => {
       const topicExercises = exercises.filter((exercise) => exercise.topicId === topicId)
 
       expect(topicExercises.length, `tópico "${topicId}"`).toBeGreaterThanOrEqual(4)
+    }
+  })
+})
+
+/**
+ * A regra que fecha a Fase 3: "todos os testes passaram" só pode significar
+ * algo se a solução tiver sido cobrada com mais de uma entrada. Um script
+ * avaliado sempre com os mesmos valores aprova quem escreveu a resposta à mão.
+ */
+describe('entrada dos exercícios de script', () => {
+  const scriptExercises = exercises.filter(
+    (exercise): exercise is ScriptExercise => exercise.executionMode === 'script',
+  )
+
+  function injectedNames(exercise: ScriptExercise): string[] {
+    return [
+      ...new Set(
+        exercise.tests.flatMap((testCase) => Object.keys(testCase.initialVariables ?? {})),
+      ),
+    ]
+  }
+
+  it('injeta a entrada em todos os casos, ou em nenhum', () => {
+    for (const exercise of scriptExercises) {
+      const names = injectedNames(exercise)
+
+      for (const testCase of exercise.tests) {
+        const caseNames = Object.keys(testCase.initialVariables ?? {})
+
+        expect(
+          [...caseNames].sort(),
+          `caso "${testCase.id}" de "${exercise.id}"`,
+        ).toEqual([...names].sort())
+      }
+    }
+  })
+
+  it('nunca atribui no starter code um nome que o caso injeta', () => {
+    for (const exercise of scriptExercises) {
+      for (const name of injectedNames(exercise)) {
+        expect(
+          new RegExp(`^\\s*${name}\\s*=[^=]`, 'm').test(exercise.starterCode),
+          `"${exercise.id}" atribui "${name}" no starter code e sobrescreveria a entrada`,
+        ).toBe(false)
+      }
+    }
+  })
+
+  it('varia a entrada entre os casos de quem declara entrada', () => {
+    for (const exercise of scriptExercises) {
+      if (injectedNames(exercise).length === 0) {
+        continue
+      }
+
+      const distinctInputs = new Set(
+        exercise.tests.map((testCase) => JSON.stringify(testCase.initialVariables)),
+      )
+
+      expect(
+        distinctInputs.size,
+        `"${exercise.id}" repete a mesma entrada em todos os casos`,
+      ).toBeGreaterThan(1)
+    }
+  })
+
+  it('cobra entrada variável em todo script cujo enunciado parte de dados', () => {
+    // Exercícios de print puro ficam de fora: o aluno cria os próprios valores,
+    // e injetar entrada ali não mediria nada a mais.
+    const expected = [
+      'prog-variables-003',
+      'prog-variables-004',
+      'prog-operators-001',
+      'prog-operators-002',
+      'prog-operators-003',
+      'prog-operators-004',
+      'prog-conditionals-001',
+      'prog-conditionals-002',
+      'prog-loops-001',
+      'prog-loops-002',
+      'prog-lists-001',
+      'prog-lists-002',
+    ]
+
+    for (const id of expected) {
+      const exercise = scriptExercises.find((item) => item.id === id)
+
+      expect(exercise, `exercício "${id}" não existe mais`).toBeDefined()
+      expect(injectedNames(exercise!).length, `"${id}" não declara entrada`).toBeGreaterThan(0)
+    }
+  })
+
+  it('mostra ao aluno os valores iniciais de cada exemplo público', () => {
+    for (const exercise of scriptExercises) {
+      if (injectedNames(exercise).length === 0) {
+        continue
+      }
+
+      for (const example of getPublicExamples(exercise)) {
+        expect(example.given, `exemplo de "${exercise.id}"`).toBeTruthy()
+      }
     }
   })
 })

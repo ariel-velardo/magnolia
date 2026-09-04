@@ -12,19 +12,45 @@ const exercise = {
   difficulty: 'Fundamentos',
   executionMode: 'script',
   instructions: [
+    'As variáveis meta_prevista e meta_atingida já vêm definidas: a verificação roda o mesmo programa com valores diferentes.',
     'Compare as duas metas e exiba três linhas, nesta ordem.',
     'Primeira: se meta_atingida é maior ou igual a meta_prevista.',
     'Segunda: se as duas metas são exatamente iguais.',
     'Terceira: se meta_atingida é diferente de zero.',
     'Cada linha deve exibir apenas True ou False.',
   ],
-  starterCode:
-    'meta_prevista = 100\nmeta_atingida = 120\n\n# Exiba as três comparações\n',
-  examples: [
+  starterCode: '# Exiba as três comparações\n',
+  tests: [
     {
-      output: 'True\nFalse\nTrue',
+      id: 'prog-operators-003-case-1',
+      visibility: 'public',
+      label: 'meta_prevista = 100, meta_atingida = 120',
+      initialVariables: { meta_prevista: 100, meta_atingida: 120 },
+      expectedStdout: 'True\nFalse\nTrue',
       explanation:
         '120 é maior que 100, as metas não são iguais, e 120 é diferente de zero.',
+    },
+    {
+      id: 'prog-operators-003-case-2',
+      visibility: 'public',
+      label: 'meta_prevista = 100, meta_atingida = 100',
+      initialVariables: { meta_prevista: 100, meta_atingida: 100 },
+      expectedStdout: 'True\nTrue\nTrue',
+      explanation: 'Metas iguais satisfazem o "maior ou igual" e a igualdade.',
+    },
+    {
+      id: 'prog-operators-003-case-3',
+      visibility: 'internal',
+      label: 'meta_prevista = 50, meta_atingida = 0',
+      initialVariables: { meta_prevista: 50, meta_atingida: 0 },
+      expectedStdout: 'False\nFalse\nFalse',
+    },
+    {
+      id: 'prog-operators-003-case-4',
+      visibility: 'internal',
+      label: 'meta_prevista = 80, meta_atingida = 90',
+      initialVariables: { meta_prevista: 80, meta_atingida: 90 },
+      expectedStdout: 'True\nFalse\nTrue',
     },
   ],
   hints: [

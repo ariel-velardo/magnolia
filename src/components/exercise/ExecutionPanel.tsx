@@ -1,54 +1,57 @@
 import { hasVisibleOutput } from '../../engine/pythonRunner'
 import type { ExecutionResult } from '../../engine/pythonRunner'
-import type { RunnerPhase } from '../../hooks/usePythonRunner'
+import type { RunnerAction, RunnerPhase } from '../../hooks/useExerciseRunner'
 import { Icon } from '../common/Icon'
+import { ExecutionErrorView } from './ExecutionErrorView'
 
 interface ExecutionPanelProps {
   phase: RunnerPhase
+  action: RunnerAction
   result: ExecutionResult | null
 }
 
 const PHASE_MESSAGE: Record<Exclude<RunnerPhase, 'idle'>, string> = {
   preparing: 'Preparando Python no navegador…',
   running: 'Executando seu código…',
+  verifying: 'Executando seu código…',
 }
 
 /**
- * Apresentação do resultado da execução. Não interpreta correção: nesta fase o
- * Magnolia mostra o que o Python respondeu, e nada além disso.
+ * Saída da execução livre — o que o programa imprimiu e o erro, se houve.
+ *
+ * Este painel responde "o que meu código fez?". Quem responde "minha solução
+ * está certa?" é o EvaluationPanel; misturar as duas respostas apagaria a
+ * distinção entre executar e verificar.
  */
-export function ExecutionPanel({ phase, result }: ExecutionPanelProps) {
-  const isBusy = phase !== 'idle'
+export function ExecutionPanel({ phase, action, result }: ExecutionPanelProps) {
+  const isRunning = phase !== 'idle' && action === 'run'
+
+  if (!isRunning && !result) {
+    return null
+  }
 
   return (
     <section
       className="execution-panel"
       aria-labelledby="execution-title"
-      data-state={isBusy ? 'busy' : (result?.outcome ?? 'idle')}
+      data-state={isRunning ? 'busy' : (result?.outcome ?? 'idle')}
     >
       <div className="execution-panel__header">
-        <h3 id="execution-title">Saída</h3>
-        {result && !isBusy && (
+        <h3 id="execution-title">Saída da execução</h3>
+        {result && !isRunning && (
           <span className="execution-panel__duration">{result.durationMs} ms</span>
         )}
       </div>
 
       <div className="execution-panel__body" role="status" aria-live="polite">
-        {isBusy && (
+        {isRunning && (
           <p className="execution-panel__pending">
             <span className="execution-panel__spinner" aria-hidden="true" />
             {PHASE_MESSAGE[phase]}
           </p>
         )}
 
-        {!isBusy && !result && (
-          <p className="execution-panel__idle">
-            Escreva sua solução e execute para ver a saída aqui. A primeira
-            execução baixa o Python para o navegador e leva alguns segundos.
-          </p>
-        )}
-
-        {!isBusy && result && <ExecutionOutcome result={result} />}
+        {!isRunning && result && <ExecutionOutcome result={result} />}
       </div>
     </section>
   )
@@ -60,12 +63,18 @@ function ExecutionOutcome({ result }: { result: ExecutionResult }) {
 
   return (
     <>
-      {showStdout && <pre className="execution-output" tabIndex={0}>{result.stdout}</pre>}
+      {showStdout && (
+        <pre className="execution-output" tabIndex={0}>
+          {result.stdout}
+        </pre>
+      )}
 
       {showStderr && (
         <div className="execution-stream">
           <p className="execution-stream__label">stderr</p>
-          <pre className="execution-output" tabIndex={0}>{result.stderr}</pre>
+          <pre className="execution-output" tabIndex={0}>
+            {result.stderr}
+          </pre>
         </div>
       )}
 
@@ -74,34 +83,13 @@ function ExecutionOutcome({ result }: { result: ExecutionResult }) {
           <Icon name="check" size={16} />
           <span>
             Código executado sem saída. Use <code>print()</code> para ver
-            resultados — isso não significa que a solução está correta.
+            resultados — executar sem erro não significa que a solução está
+            correta.
           </span>
         </p>
       )}
 
       {result.error && <ExecutionErrorView error={result.error} />}
     </>
-  )
-}
-
-function ExecutionErrorView({ error }: { error: NonNullable<ExecutionResult['error']> }) {
-  return (
-    <div className="execution-error" data-kind={error.kind}>
-      <p className="execution-error__headline">
-        <span className="execution-error__type">{error.type}</span>
-        {error.line !== undefined && (
-          <span className="execution-error__line">linha {error.line}</span>
-        )}
-      </p>
-
-      {error.message && <p className="execution-error__message">{error.message}</p>}
-
-      {error.traceback && (
-        <details className="execution-error__details">
-          <summary>Ver traceback do Python</summary>
-          <pre className="execution-output" tabIndex={0}>{error.traceback}</pre>
-        </details>
-      )}
-    </div>
   )
 }

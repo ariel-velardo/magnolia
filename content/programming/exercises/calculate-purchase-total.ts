@@ -20,16 +20,34 @@ const exercise = {
   ],
   starterCode:
     'def calcular_total(preco_unitario, quantidade):\n    # Calcule e devolva o total\n    pass\n\n\n# Linha de inspeção: fora da função, só para conferir o retorno\nprint(calcular_total(18.5, 2))\n',
-  examples: [
+  tests: [
     {
-      input: 'calcular_total(18.5, 2)',
-      output: '37.0',
+      id: 'prog-functions-002-case-1',
+      visibility: 'public',
+      args: [18.5, 2],
+      expected: 37,
+      tolerance: 1e-9,
       explanation: 'Um preço float produz um total float.',
     },
     {
-      input: 'calcular_total(7, 3)',
-      output: '21',
+      id: 'prog-functions-002-case-2',
+      visibility: 'public',
+      args: [7, 3],
+      expected: 21,
       explanation: 'Com dois inteiros, o resultado também é inteiro.',
+    },
+    {
+      id: 'prog-functions-002-case-3',
+      visibility: 'internal',
+      args: [0, 5],
+      expected: 0,
+    },
+    {
+      id: 'prog-functions-002-case-4',
+      visibility: 'internal',
+      args: [99.99, 3],
+      expected: 299.97,
+      tolerance: 1e-9,
     },
   ],
   hints: [

@@ -20,14 +20,34 @@ const exercise = {
   ],
   starterCode:
     'import numpy as np\n\n\ndef converter_para_fahrenheit(temperaturas_celsius):\n    # Aplique a fórmula ao array inteiro.\n    pass',
-  examples: [
+  tests: [
     {
-      input: 'converter_para_fahrenheit(np.array([0, 10, 20]))',
-      output: 'array([32., 50., 68.])',
+      id: 'ds-numpy-002-case-1',
+      visibility: 'public',
+      args: [{ kind: 'ndarray', items: [0, 10, 20] }],
+      expected: [32, 50, 68],
+      tolerance: 1e-9,
     },
     {
-      input: 'converter_para_fahrenheit(np.array([-40, 100]))',
-      output: 'array([-40., 212.])',
+      id: 'ds-numpy-002-case-2',
+      visibility: 'public',
+      args: [{ kind: 'ndarray', items: [-40, 100] }],
+      expected: [-40, 212],
+      tolerance: 1e-9,
+      explanation: '-40 é o ponto em que as duas escalas coincidem.',
+    },
+    {
+      id: 'ds-numpy-002-case-3',
+      visibility: 'internal',
+      args: [{ kind: 'ndarray', items: [37] }],
+      expected: [98.6],
+      tolerance: 1e-9,
+    },
+    {
+      id: 'ds-numpy-002-case-4',
+      visibility: 'internal',
+      args: [{ kind: 'ndarray', items: [] }],
+      expected: [],
     },
   ],
   hints: [

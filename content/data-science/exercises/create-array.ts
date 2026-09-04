@@ -19,14 +19,31 @@ const exercise = {
   ],
   starterCode:
     'import numpy as np\n\n\ndef criar_array(valores):\n    # Converta os valores em um array NumPy.\n    pass',
-  examples: [
+  tests: [
     {
-      input: 'criar_array([12, 15, 18])',
-      output: 'array([12, 15, 18])',
+      id: 'ds-numpy-001-case-1',
+      visibility: 'public',
+      args: [[12, 15, 18]],
+      expected: [12, 15, 18],
     },
     {
-      input: 'criar_array([2.5, 4.0])',
-      output: 'array([2.5, 4. ])',
+      id: 'ds-numpy-001-case-2',
+      visibility: 'public',
+      args: [[2.5, 4]],
+      expected: [2.5, 4],
+      tolerance: 1e-9,
+    },
+    {
+      id: 'ds-numpy-001-case-3',
+      visibility: 'internal',
+      args: [[]],
+      expected: [],
+    },
+    {
+      id: 'ds-numpy-001-case-4',
+      visibility: 'internal',
+      args: [[-4, 0, 7]],
+      expected: [-4, 0, 7],
     },
   ],
   hints: [
