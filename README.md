@@ -1,75 +1,169 @@
-# React + TypeScript + Vite
+# Magnolia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Programming • Statistics • Machine Learning**
 
-Currently, two official plugins are available:
+Magnolia é uma plataforma pessoal de aprendizado e prática de programação, estatística e Data Science.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+A proposta é combinar conteúdo didático com exercícios executáveis diretamente no navegador.
 
-## React Compiler
+O fluxo principal de aprendizado é:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Conceito → Explicação → Exemplos → Prática → Testes → Feedback → Progresso**
 
-## Expanding the ESLint configuration
+## Objetivo
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+O Magnolia nasce como uma ferramenta pessoal para:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- praticar Python;
+- desenvolver lógica de programação;
+- estudar Data Science de forma prática;
+- revisar estatística e Machine Learning;
+- acompanhar evolução por habilidade;
+- preparar-se futuramente para entrevistas técnicas.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+A plataforma começa com Python, mas sua arquitetura deve permitir expansão futura para SQL e outros tipos de exercício.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Trilhas iniciais
 
-```
+### Programação
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Conteúdos planejados incluem:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- variáveis e tipos;
+- condicionais;
+- loops;
+- strings;
+- listas;
+- dicionários;
+- sets;
+- funções;
+- comprehensions;
+- tratamento de erros;
+- orientação a objetos;
+- algoritmos;
+- resolução de problemas;
+- desafios de entrevistas técnicas.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Data Science
 
-```
+Conteúdos planejados incluem:
+
+- Python para Data Science;
+- NumPy;
+- Pandas;
+- análise exploratória;
+- estatística;
+- probabilidade;
+- Machine Learning;
+- casos aplicados.
+
+## Experiência de exercício
+
+Cada exercício poderá oferecer:
+
+- explicação do problema;
+- exemplos;
+- código inicial;
+- editor de código;
+- execução Python no navegador;
+- testes automáticos;
+- feedback de erros;
+- dicas;
+- acompanhamento de progresso.
+
+O objetivo não é apenas informar se a resposta está certa ou errada, mas ajudar o aluno a entender o erro e tentar novamente.
+
+## Stack
+
+A stack inicial é:
+
+- React
+- TypeScript
+- Vite
+- ESLint
+- Tailwind CSS
+- Monaco Editor
+- Pyodide
+- localStorage
+- Vitest
+
+Python será executado localmente no navegador através do Pyodide.
+
+A V1 não possui backend, banco de dados ou autenticação.
+
+## Estrutura
+
+    magnolia/
+    ├── content/
+    │   ├── programming/
+    │   └── data-science/
+    ├── docs/
+    ├── src/
+    │   ├── components/
+    │   ├── engine/
+    │   ├── hooks/
+    │   ├── layouts/
+    │   ├── pages/
+    │   ├── progress/
+    │   ├── types/
+    │   └── utils/
+    └── tests/
+
+A arquitetura completa está documentada em:
+
+`docs/ARCHITECTURE.md`
+
+O roadmap está em:
+
+`docs/ROADMAP.md`
+
+As regras para criação de conteúdo estão em:
+
+`docs/CONTENT_GUIDE.md`
+
+## Executando localmente
+
+Instale as dependências:
+
+    npm install
+
+Inicie o ambiente de desenvolvimento:
+
+    npm run dev
+
+Valide o projeto:
+
+    npm run lint
+    npm run build
+
+Quando os testes automatizados estiverem configurados:
+
+    npm test
+
+## Status
+
+O Magnolia está em desenvolvimento inicial.
+
+A prioridade atual é construir uma primeira versão funcional com:
+
+- interface de aprendizado;
+- editor de código;
+- execução Python;
+- avaliação automática;
+- conteúdo inicial;
+- progresso local.
+
+## Evolução futura
+
+Possibilidades futuras incluem:
+
+- SQL;
+- exercícios interativos de estatística;
+- Machine Learning;
+- modo entrevista;
+- cronômetro;
+- análise de habilidades;
+- prática adaptativa;
+- tutor com IA;
+- contas de usuário;
+- persistência em nuvem.
